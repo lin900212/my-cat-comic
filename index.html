@@ -815,7 +815,7 @@
     }
 
     function promptChineseDialogue(student) {
-      return `請幫我將下面四個事件改寫成漫畫式的簡短中文對白。\n不需要生成圖片，不要加入其他說明。\n句子要短，適合放進漫畫對白框。\n\n${eventsText(student)}`;
+      return `請觀察我上傳的無字四格漫畫以及下面四個事件，依照左上、右上、左下、右下的順序，幫我寫出適合放進漫畫對白框的簡短中文對白。\n\n請根據漫畫中角色的外觀、表情、動作和位置判斷是誰在說話。\n\n注意：\n\n1. 不需要生成圖片。\n2. 不要加入額外說明。\n3. 每句對白前請標註「說話角色特徵」，讓我知道是哪一個角色在說話。\n4. 角色特徵只用來標示說話者，不要放進真正的對白內容。\n5. 句子要短，適合放進漫畫對白框。\n6. 如果事件和漫畫畫面有一點不同，請以漫畫畫面為主，事件描述為輔。\n7. 每一格可以有 1 到 2 句對白。\n\n四個事件如下：\n\n${eventsText(student)}`;
     }
 
     function promptChineseComic() {
@@ -987,10 +987,11 @@
 
         ${stepHtml(2, "生成中文對白", `
           <ol class="mini-steps">
+            <li>回到四格漫畫 Gem 對話窗，複製無字四格漫畫。</li>
             <li>開啟 Gemini 新對話。</li>
+            <li>把無字四格漫畫貼到 Gemini 新對話。</li>
             <li>複製「生成中文對白」提示詞。</li>
-            <li>把提示詞貼到 Gemini，送出。</li>
-            <li>保留產生的中文對白。</li>
+            <li>把提示詞貼到同一個聊天視窗，送出。</li>
           </ol>
           <div class="action-row">
             <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
