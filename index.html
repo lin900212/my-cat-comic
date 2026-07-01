@@ -644,7 +644,6 @@
       <div>
         <div class="brand-kicker">AI Warriors Mission Site</div>
         <h1>My Cat Comic</h1>
-        <p class="subtitle">學生選名字後照步驟完成漫畫。老師可新增學生、上傳角色圖、匯入 CSV 或 JSON。</p>
       </div>
       <nav class="mode-tabs" aria-label="模式切換">
         <button class="tab" id="studentTab" aria-selected="true">學生任務</button>
@@ -733,6 +732,8 @@
     const GEMINI_URL = "https://gemini.google.com/u/0/app";
     const STORE_KEY = "my-cat-comic-students-v23";
     const PROMPT_STORE_KEY = "my-cat-comic-prompt-edits-v1";
+    const TEACHER_PASSWORD = "900212";
+    const TEACHER_AUTH_KEY = "my-cat-comic-teacher-auth";
     const SITE_DATA_URL = "students.json";
 
     const sampleStudents = [
@@ -1267,7 +1268,21 @@
       `).join("");
     }
 
+    function canOpenTeacherMode() {
+      if (sessionStorage.getItem(TEACHER_AUTH_KEY) === "true") return true;
+      const password = prompt("請輸入老師管理密碼");
+      if (password === TEACHER_PASSWORD) {
+        sessionStorage.setItem(TEACHER_AUTH_KEY, "true");
+        return true;
+      }
+      if (password !== null) showToast("密碼錯誤");
+      return false;
+    }
+
     function setMode(mode) {
+      if (mode === "teacher" && !canOpenTeacherMode()) {
+        mode = "student";
+      }
       const isTeacher = mode === "teacher";
       teacherTab.setAttribute("aria-selected", String(isTeacher));
       studentTab.setAttribute("aria-selected", String(!isTeacher));
