@@ -368,29 +368,41 @@
       line-height: 1.6;
     }
 
-    .prompt-box {
+    .prompt-editor {
       margin-top: 10px;
       padding: 12px;
       background: #fbfaf7;
-      color: var(--ink);
       border: 1px solid var(--line);
       border-radius: 6px;
-      line-height: 1.65;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-size: 14px;
     }
 
-    .prompt-detail {
-      margin-top: 8px;
+    .prompt-editor-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
-    .prompt-detail summary {
-      cursor: pointer;
+    .prompt-editor-head label {
+      margin: 0;
+    }
+
+    .prompt-editor-head span {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      width: fit-content;
+    }
+
+    .prompt-editor textarea {
+      min-height: 180px;
+      line-height: 1.65;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .prompt-actions {
+      margin-bottom: 0;
     }
 
     .notice {
@@ -681,6 +693,7 @@
     const GEM_COMIC_URL = "https://gemini.google.com/gem/1136PtzsZTmBkebcT9VAouv15gDrxmafC?usp=sharing";
     const GEMINI_URL = "https://gemini.google.com/u/0/app";
     const STORE_KEY = "my-cat-comic-students-v23";
+    const PROMPT_STORE_KEY = "my-cat-comic-prompt-edits-v1";
     const SITE_DATA_URL = "students.json";
 
     const sampleStudents = [
@@ -715,6 +728,7 @@
     ];
 
     let students = loadStudents();
+    let promptEdits = loadPromptEdits();
     let selectedId = students[0]?.id || "";
     let stagedImage = "";
 
@@ -748,6 +762,16 @@
         return normalized.length ? normalized : sampleStudents;
       } catch {
         return sampleStudents;
+      }
+    }
+
+    function loadPromptEdits() {
+      try {
+        const raw = localStorage.getItem(PROMPT_STORE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch {
+        return {};
       }
     }
 
@@ -789,6 +813,10 @@
       localStorage.setItem(STORE_KEY, JSON.stringify(students));
     }
 
+    function savePromptEdits() {
+      localStorage.setItem(PROMPT_STORE_KEY, JSON.stringify(promptEdits));
+    }
+
     function uid() {
       return "s-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
     }
@@ -810,6 +838,26 @@
       return (student?.events || []).filter(Boolean).map((event, index) => `${index + 1}. ${event}`).join("\n");
     }
 
+    function savedPromptValue(student, promptKey, fallback) {
+      const studentEdits = promptEdits?.[student?.id] || {};
+      return Object.prototype.hasOwnProperty.call(studentEdits, promptKey)
+        ? studentEdits[promptKey]
+        : fallback;
+    }
+
+    function savePromptValue(student, promptKey, value) {
+      if (!student?.id || !promptKey) return;
+      promptEdits[student.id] = {
+        ...(promptEdits[student.id] || {}),
+        [promptKey]: value
+      };
+      savePromptEdits();
+    }
+
+    function promptRows(text) {
+      return Math.min(18, Math.max(8, String(text || "").split("\n").length + 2));
+    }
+
     function promptNoTextComic(student) {
       return `根據圖片中的角色，幫我把下面四個事件做成一張沒有文字的四格漫畫。\n\n${eventsText(student)}`;
     }
@@ -828,6 +876,21 @@
 
     function promptKeepLayout() {
       return `請不要改變漫畫的畫面、角色、構圖和風格。\n只需要把對話框裡的中文字改成簡單英文。\n其他地方都保持原本一樣。`;
+    }
+
+    function promptMap(student) {
+      return {
+        noText: [promptNoTextComic(student), "生成無字四格漫畫"],
+        dialogue: [promptChineseDialogue(student), "生成中文對白"],
+        zhComic: [promptChineseComic(), "製作中文版漫畫"],
+        enComic: [promptEnglishComic(), "製作英文版漫畫"],
+        keepLayout: [promptKeepLayout(), "只改文字，不改畫面"]
+      };
+    }
+
+    function currentPromptText(promptKey, fallback) {
+      const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
+      return editor ? editor.value : fallback;
     }
 
     function canOpenImageInNewTab(image) {
@@ -982,7 +1045,7 @@
           <div class="action-row">
             <button class="btn" data-copy="noText">複製：生成無字四格漫畫</button>
           </div>
-          ${promptDetails(promptNoTextComic(student))}
+          ${promptEditor("noText", "生成無字四格漫畫提示詞", promptNoTextComic(student))}
         `)}
 
         ${stepHtml(2, "生成中文對白", `
@@ -997,7 +1060,7 @@
             <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
             <button class="btn" data-copy="dialogue">複製：生成中文對白</button>
           </div>
-          ${promptDetails(promptChineseDialogue(student))}
+          ${promptEditor("dialogue", "生成中文對白提示詞", promptChineseDialogue(student))}
         `)}
 
         ${stepHtml(3, "製作中文版漫畫", `
@@ -1013,7 +1076,7 @@
           <div class="action-row">
             <button class="btn" data-copy="zhComic">複製：製作中文版漫畫</button>
           </div>
-          ${promptDetails(promptChineseComic())}
+          ${promptEditor("zhComic", "製作中文版漫畫提示詞", promptChineseComic())}
           <div class="notice">文字不穩時，改用 Canva 加字。</div>
         `)}
 
@@ -1029,7 +1092,7 @@
             <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
             <button class="btn" data-copy="enComic">複製：製作英文版漫畫</button>
           </div>
-          ${promptDetails(promptEnglishComic())}
+          ${promptEditor("enComic", "製作英文版漫畫提示詞", promptEnglishComic())}
         `)}
 
         ${stepHtml(5, "如果英文版改圖太多", `
@@ -1037,7 +1100,7 @@
           <div class="action-row">
             <button class="btn" data-copy="keepLayout">複製：只改文字，不改畫面</button>
           </div>
-          ${promptDetails(promptKeepLayout())}
+          ${promptEditor("keepLayout", "只改文字提示詞", promptKeepLayout())}
         `)}
 
         ${stepHtml("✓", "完成後", `
@@ -1063,12 +1126,20 @@
       `;
     }
 
-    function promptDetails(text) {
+    function promptEditor(promptKey, label, defaultText) {
+      const student = currentStudent();
+      const value = savedPromptValue(student, promptKey, defaultText);
       return `
-        <details class="prompt-detail" open>
-          <summary>查看提示詞</summary>
-          <div class="prompt-box">${escapeHtml(text)}</div>
-        </details>
+        <div class="prompt-editor">
+          <div class="prompt-editor-head">
+            <label for="prompt-${escapeHtml(promptKey)}">調整提示詞</label>
+            <span>會自動保存</span>
+          </div>
+          <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
+          <div class="action-row prompt-actions">
+            <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
+          </div>
+        </div>
       `;
     }
 
@@ -1230,18 +1301,21 @@
       renderStudent();
     });
 
+    steps.addEventListener("input", event => {
+      const editor = event.target.closest("[data-prompt-editor]");
+      if (!editor) return;
+      savePromptValue(currentStudent(), editor.dataset.promptEditor, editor.value);
+    });
+
     steps.addEventListener("click", event => {
-      const copyKey = event.target.closest("[data-copy]")?.dataset.copy;
+      const copyKey = event.target.closest("[data-copy]")?.dataset.copy
+        || event.target.closest("[data-copy-edited]")?.dataset.copyEdited;
       if (copyKey) {
         const student = currentStudent();
-        const map = {
-          noText: [promptNoTextComic(student), "生成無字四格漫畫"],
-          dialogue: [promptChineseDialogue(student), "生成中文對白"],
-          zhComic: [promptChineseComic(), "製作中文版漫畫"],
-          enComic: [promptEnglishComic(), "製作英文版漫畫"],
-          keepLayout: [promptKeepLayout(), "只改文字，不改畫面"]
-        };
-        copyText(map[copyKey][0], map[copyKey][1]);
+        const map = promptMap(student);
+        if (map[copyKey]) {
+          copyText(currentPromptText(copyKey, map[copyKey][0]), map[copyKey][1]);
+        }
       }
 
       if (event.target.closest("[data-action='copy-image']")) {
