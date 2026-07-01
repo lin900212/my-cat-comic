@@ -57,6 +57,52 @@ If the user provides only a class roster without role assignments, create exampl
 我先假設前三位依序是 Narrator、Coach、Knight。
 ```
 
+## Student Image Matching
+
+The user does not need to rename student role images before sending them.
+
+When the user uploads a batch of role images with unclear filenames, use one of these matching methods:
+
+### Ordered Matching
+
+If the user says the images are in roster or `students.json` order, match them directly by order.
+
+Example user instruction:
+
+```text
+這些圖片依序對應 students.json 裡風班學生順序。
+請重新命名圖片、放到 images/、更新 students.json，commit 並 push。
+```
+
+Process:
+
+1. Read the current `students.json`.
+2. Filter to the requested class/group if specified.
+3. Pair uploaded images with students in that order.
+4. Rename images to stable lowercase slugs, e.g. `images/wind-bunny.jpg`.
+5. Update each student's `image` field.
+
+### Explicit Pairing
+
+If the image order is unclear, show a numbered image list and ask the user to reply with pairings.
+
+Example:
+
+```text
+圖片 1 = 吳品諭 Bunny
+圖片 2 = 張恩綺 Rebecca
+圖片 3 = 張奎鈞 Apple
+```
+
+Then rename, copy into `images/`, update `students.json`, validate, commit, and push.
+
+### Image Naming Rules
+
+- Use the student's existing `id` when available: `images/{id}.jpg` or `images/{id}.png`.
+- If no `id` exists, create a lowercase ASCII slug from class and English name, e.g. `wind-bunny`.
+- Preserve the original extension when reasonable; otherwise use `.jpg` for resized/compressed photos and `.png` for transparent or generated PNG artwork.
+- Do not require the user to manually rename images before using this skill.
+
 ## Output Schema
 
 `students.json` must be valid JSON:
@@ -164,4 +210,3 @@ curl -s https://lin900212.github.io/my-cat-comic/students.json | head
 - Do not include emails in `students.json` unless the user explicitly asks; the classroom website does not need them.
 - Do not publish unrelated files or temporary screenshots.
 - If role assignments are unknown, either ask for them or clearly mark assumptions before generating examples.
-
