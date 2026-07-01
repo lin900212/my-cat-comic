@@ -433,16 +433,15 @@
     }
 
     .prompt-actions {
-      margin-bottom: 0;
-    }
-
-    .step-nav {
       display: flex;
       flex-wrap: wrap;
       gap: 9px;
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
+      margin-bottom: 0;
+    }
+
+    .prompt-actions .btn {
+      width: auto;
+      min-width: 104px;
     }
 
     .notice {
@@ -769,6 +768,8 @@
 
     let students = loadStudents();
     let promptEdits = loadPromptEdits();
+    let promptHistories = {};
+    let applyingPromptHistory = false;
     let selectedId = students[0]?.id || "";
     let stagedImage = "";
 
@@ -931,6 +932,60 @@
     function currentPromptText(promptKey, fallback) {
       const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
       return editor ? editor.value : fallback;
+    }
+
+    function promptHistoryKey(student, promptKey) {
+      return `${student?.id || "student"}::${promptKey}`;
+    }
+
+    function initPromptHistories() {
+      steps.querySelectorAll("[data-prompt-editor]").forEach(editor => {
+        const key = promptHistoryKey(currentStudent(), editor.dataset.promptEditor);
+        promptHistories[key] = {
+          values: [editor.value],
+          index: 0
+        };
+        refreshPromptHistoryButtons(editor.dataset.promptEditor);
+      });
+    }
+
+    function pushPromptHistory(promptKey, value) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key] || { values: [], index: -1 };
+      if (history.values[history.index] === value) {
+        refreshPromptHistoryButtons(promptKey);
+        return;
+      }
+      history.values = history.values.slice(0, history.index + 1);
+      history.values.push(value);
+      if (history.values.length > 40) history.values.shift();
+      history.index = history.values.length - 1;
+      promptHistories[key] = history;
+      refreshPromptHistoryButtons(promptKey);
+    }
+
+    function movePromptHistory(promptKey, direction) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key];
+      const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
+      if (!history || !editor) return;
+      const nextIndex = history.index + direction;
+      if (nextIndex < 0 || nextIndex >= history.values.length) return;
+      history.index = nextIndex;
+      applyingPromptHistory = true;
+      editor.value = history.values[history.index];
+      applyingPromptHistory = false;
+      savePromptValue(currentStudent(), promptKey, editor.value);
+      refreshPromptHistoryButtons(promptKey);
+    }
+
+    function refreshPromptHistoryButtons(promptKey) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key];
+      const undoButton = steps.querySelector(`[data-prompt-undo="${promptKey}"]`);
+      const redoButton = steps.querySelector(`[data-prompt-redo="${promptKey}"]`);
+      if (undoButton) undoButton.disabled = !history || history.index <= 0;
+      if (redoButton) redoButton.disabled = !history || history.index >= history.values.length - 1;
     }
 
     function canOpenImageInNewTab(image) {
@@ -1152,6 +1207,7 @@
           </div>
         `)}
       `;
+      initPromptHistories();
     }
 
     function stepHtml(number, title, body) {
@@ -1162,23 +1218,8 @@
           <div>
             <h2>${title}</h2>
             ${body}
-            ${stepNav(number)}
           </div>
         </section>
-      `;
-    }
-
-    function stepNav(number) {
-      const steps = [1, 2, 3, 4, 5, "✓"];
-      const index = steps.indexOf(number);
-      if (index < 0) return "";
-      const previous = steps[index - 1];
-      const next = steps[index + 1];
-      return `
-        <div class="step-nav">
-          ${previous ? `<button class="btn secondary" data-step-nav="${previous === "✓" ? "step-done" : `step-${previous}`}" type="button">上一步</button>` : ""}
-          ${next ? `<button class="btn secondary" data-step-nav="${next === "✓" ? "step-done" : `step-${next}`}" type="button">下一步</button>` : ""}
-        </div>
       `;
     }
 
@@ -1202,6 +1243,8 @@
             </div>
             <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
             <div class="action-row prompt-actions">
+              <button class="btn secondary" data-prompt-undo="${escapeHtml(promptKey)}" type="button" disabled>上一步</button>
+              <button class="btn secondary" data-prompt-redo="${escapeHtml(promptKey)}" type="button" disabled>下一步</button>
               <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
             </div>
           </div>
@@ -1371,9 +1414,24 @@
       const editor = event.target.closest("[data-prompt-editor]");
       if (!editor) return;
       savePromptValue(currentStudent(), editor.dataset.promptEditor, editor.value);
+      if (!applyingPromptHistory) {
+        pushPromptHistory(editor.dataset.promptEditor, editor.value);
+      }
     });
 
     steps.addEventListener("click", event => {
+      const undoKey = event.target.closest("[data-prompt-undo]")?.dataset.promptUndo;
+      if (undoKey) {
+        movePromptHistory(undoKey, -1);
+        return;
+      }
+
+      const redoKey = event.target.closest("[data-prompt-redo]")?.dataset.promptRedo;
+      if (redoKey) {
+        movePromptHistory(redoKey, 1);
+        return;
+      }
+
       const copyKey = event.target.closest("[data-copy]")?.dataset.copy;
       if (copyKey) {
         const student = currentStudent();
@@ -1391,12 +1449,6 @@
         if (map[editedCopyKey]) {
           copyText(currentPromptText(editedCopyKey, map[editedCopyKey][0]), `修改後${map[editedCopyKey][1]}`);
         }
-        return;
-      }
-
-      const stepTarget = event.target.closest("[data-step-nav]")?.dataset.stepNav;
-      if (stepTarget) {
-        document.getElementById(stepTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
 
