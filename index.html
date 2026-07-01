@@ -643,6 +643,7 @@
             <button class="btn secondary" id="exportJsonBtn" type="button">匯出 JSON</button>
             <button class="btn secondary" id="importJsonBtn" type="button">匯入 JSON</button>
             <button class="btn secondary" id="importCsvBtn" type="button">匯入 CSV</button>
+            <button class="btn secondary" id="reloadSiteDataBtn" type="button">重新載入網站資料</button>
             <button class="btn red" id="loadSampleBtn" type="button">載入範例</button>
           </div>
           <input class="hidden" id="jsonFile" type="file" accept="application/json">
@@ -660,6 +661,7 @@
     const GEM_COMIC_URL = "https://gemini.google.com/gem/1136PtzsZTmBkebcT9VAouv15gDrxmafC?usp=sharing";
     const GEMINI_URL = "https://gemini.google.com/u/0/app";
     const STORE_KEY = "my-cat-comic-students-v23";
+    const SITE_DATA_URL = "students.json";
 
     const sampleStudents = [
       {
@@ -722,10 +724,45 @@
         const raw = localStorage.getItem(STORE_KEY);
         if (!raw) return sampleStudents;
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) && parsed.length ? parsed : sampleStudents;
+        const normalized = normalizeStudents(parsed);
+        return normalized.length ? normalized : sampleStudents;
       } catch {
         return sampleStudents;
       }
+    }
+
+    async function loadSiteStudents({ force = false } = {}) {
+      try {
+        if (!force && localStorage.getItem(STORE_KEY)) return;
+        const response = await fetch(`${SITE_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        const normalized = normalizeStudents(data);
+        if (!normalized.length) return;
+        students = normalized;
+        selectedId = students[0].id;
+        if (force) localStorage.removeItem(STORE_KEY);
+        renderAll();
+        showToast(force ? "已重新載入網站資料" : "已載入網站資料");
+      } catch {
+        if (force) showToast("讀不到 students.json");
+      }
+    }
+
+    function normalizeStudents(data) {
+      const list = Array.isArray(data) ? data : data?.students;
+      if (!Array.isArray(list)) return [];
+      return list.map((student, index) => ({
+        id: student.id || `student-${index + 1}`,
+        name: student.name || "",
+        group: student.group || "",
+        role: student.role || "",
+        story: student.story || "",
+        image: student.image || student.imageUrl || "",
+        events: Array.isArray(student.events)
+          ? student.events.filter(Boolean).slice(0, 4)
+          : [student.event1, student.event2, student.event3, student.event4].filter(Boolean)
+      })).filter(student => student.name);
     }
 
     function saveStudents() {
@@ -1237,6 +1274,10 @@
       showToast("已載入範例資料");
     });
 
+    document.getElementById("reloadSiteDataBtn").addEventListener("click", () => {
+      loadSiteStudents({ force: true });
+    });
+
     document.getElementById("exportJsonBtn").addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(students, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -1257,7 +1298,7 @@
       const reader = new FileReader();
       reader.onload = () => {
         const parsed = JSON.parse(reader.result);
-        students = parsed.map(student => ({ ...student, id: student.id || uid(), events: student.events || [] }));
+        students = normalizeStudents(parsed).map(student => ({ ...student, id: student.id || uid() }));
         selectedId = students[0]?.id || "";
         saveStudents();
         renderAll();
@@ -1279,6 +1320,7 @@
     });
 
     renderAll();
+    loadSiteStudents();
   </script>
 </body>
 </html>

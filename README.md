@@ -12,3 +12,27 @@
 
 開啟 `index.html`，或使用 GitHub Pages 部署後的網址。
 
+## 管理學生資料
+
+正式上課時，建議直接更新 `students.json`：
+
+```json
+{
+  "id": "xiao-an",
+  "name": "小安",
+  "group": "A 組",
+  "role": "Coach",
+  "story": "The Test of Courage",
+  "image": "images/xiao-an-coach.png",
+  "events": [
+    "我在訓練中心教小騎士練習。",
+    "我看到有小騎士很害怕。",
+    "我告訴他們不要放棄。",
+    "大家一起重新練習。"
+  ]
+}
+```
+
+角色圖請放在 `images/` 資料夾，並把 `image` 欄位填成對應路徑。
+
+如果瀏覽器已經存過本機資料，可以在網站的「老師管理」按「重新載入網站資料」。

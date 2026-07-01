@@ -1,0 +1,32 @@
+{
+  "students": [
+    {
+      "id": "xiao-an",
+      "name": "小安",
+      "group": "A 組",
+      "role": "Coach",
+      "story": "The Test of Courage",
+      "image": "",
+      "events": [
+        "我在訓練中心教小騎士練習。",
+        "我看到有小騎士很害怕。",
+        "我告訴他們不要放棄。",
+        "大家一起重新練習。"
+      ]
+    },
+    {
+      "id": "xiao-yu",
+      "name": "小宇",
+      "group": "A 組",
+      "role": "Little Knight",
+      "story": "The Test of Courage",
+      "image": "",
+      "events": [
+        "我來到訓練中心準備練習。",
+        "我看到對手很高大，覺得很害怕。",
+        "我聽見教練鼓勵我不要放棄。",
+        "我鼓起勇氣，和大家一起重新練習。"
+      ]
+    }
+  ]
+}
