@@ -368,6 +368,7 @@
       line-height: 1.6;
     }
 
+    .prompt-default,
     .prompt-editor {
       margin-top: 10px;
       padding: 12px;
@@ -376,6 +377,7 @@
       border-radius: 6px;
     }
 
+    .prompt-default-head,
     .prompt-editor-head {
       display: flex;
       justify-content: space-between;
@@ -384,14 +386,43 @@
       margin-bottom: 8px;
     }
 
+    .prompt-default-head label,
     .prompt-editor-head label {
       margin: 0;
     }
 
+    .prompt-default-head span,
     .prompt-editor-head span {
       color: var(--muted);
       font-size: 13px;
       font-weight: 800;
+    }
+
+    .prompt-box {
+      padding: 12px;
+      background: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 14px;
+    }
+
+    .prompt-editor {
+      padding: 0;
+    }
+
+    .prompt-editor summary {
+      cursor: pointer;
+      padding: 12px;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .prompt-editor-body {
+      padding: 0 12px 12px;
     }
 
     .prompt-editor textarea {
@@ -403,6 +434,15 @@
 
     .prompt-actions {
       margin-bottom: 0;
+    }
+
+    .step-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
     }
 
     .notice {
@@ -1043,9 +1083,9 @@
             </div>
           </div>
           <div class="action-row">
-            <button class="btn" data-copy="noText">複製：生成無字四格漫畫</button>
+            <button class="btn" data-copy="noText">複製：預設生成無字四格漫畫</button>
           </div>
-          ${promptEditor("noText", "生成無字四格漫畫提示詞", promptNoTextComic(student))}
+          ${promptTools("noText", "生成無字四格漫畫提示詞", promptNoTextComic(student))}
         `)}
 
         ${stepHtml(2, "生成中文對白", `
@@ -1058,9 +1098,9 @@
           </ol>
           <div class="action-row">
             <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
-            <button class="btn" data-copy="dialogue">複製：生成中文對白</button>
+            <button class="btn" data-copy="dialogue">複製：預設生成中文對白</button>
           </div>
-          ${promptEditor("dialogue", "生成中文對白提示詞", promptChineseDialogue(student))}
+          ${promptTools("dialogue", "生成中文對白提示詞", promptChineseDialogue(student))}
         `)}
 
         ${stepHtml(3, "製作中文版漫畫", `
@@ -1074,9 +1114,9 @@
             <li>按送出。</li>
           </ol>
           <div class="action-row">
-            <button class="btn" data-copy="zhComic">複製：製作中文版漫畫</button>
+            <button class="btn" data-copy="zhComic">複製：預設製作中文版漫畫</button>
           </div>
-          ${promptEditor("zhComic", "製作中文版漫畫提示詞", promptChineseComic())}
+          ${promptTools("zhComic", "製作中文版漫畫提示詞", promptChineseComic())}
           <div class="notice">文字不穩時，改用 Canva 加字。</div>
         `)}
 
@@ -1090,17 +1130,17 @@
           </ol>
           <div class="action-row">
             <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
-            <button class="btn" data-copy="enComic">複製：製作英文版漫畫</button>
+            <button class="btn" data-copy="enComic">複製：預設製作英文版漫畫</button>
           </div>
-          ${promptEditor("enComic", "製作英文版漫畫提示詞", promptEnglishComic())}
+          ${promptTools("enComic", "製作英文版漫畫提示詞", promptEnglishComic())}
         `)}
 
         ${stepHtml(5, "如果英文版改圖太多", `
           <p>只有英文版畫面跑掉時使用。</p>
           <div class="action-row">
-            <button class="btn" data-copy="keepLayout">複製：只改文字，不改畫面</button>
+            <button class="btn" data-copy="keepLayout">複製：預設只改文字</button>
           </div>
-          ${promptEditor("keepLayout", "只改文字提示詞", promptKeepLayout())}
+          ${promptTools("keepLayout", "只改文字提示詞", promptKeepLayout())}
         `)}
 
         ${stepHtml("✓", "完成後", `
@@ -1115,31 +1155,57 @@
     }
 
     function stepHtml(number, title, body) {
+      const id = number === "✓" ? "step-done" : `step-${number}`;
       return `
-        <section class="step">
+        <section class="step" id="${id}" data-step-number="${escapeHtml(number)}">
           <div class="badge">${number}</div>
           <div>
             <h2>${title}</h2>
             ${body}
+            ${stepNav(number)}
           </div>
         </section>
       `;
     }
 
-    function promptEditor(promptKey, label, defaultText) {
+    function stepNav(number) {
+      const steps = [1, 2, 3, 4, 5, "✓"];
+      const index = steps.indexOf(number);
+      if (index < 0) return "";
+      const previous = steps[index - 1];
+      const next = steps[index + 1];
+      return `
+        <div class="step-nav">
+          ${previous ? `<button class="btn secondary" data-step-nav="${previous === "✓" ? "step-done" : `step-${previous}`}" type="button">上一步</button>` : ""}
+          ${next ? `<button class="btn secondary" data-step-nav="${next === "✓" ? "step-done" : `step-${next}`}" type="button">下一步</button>` : ""}
+        </div>
+      `;
+    }
+
+    function promptTools(promptKey, label, defaultText) {
       const student = currentStudent();
       const value = savedPromptValue(student, promptKey, defaultText);
       return `
-        <div class="prompt-editor">
-          <div class="prompt-editor-head">
-            <label for="prompt-${escapeHtml(promptKey)}">調整提示詞</label>
-            <span>會自動保存</span>
+        <div class="prompt-default">
+          <div class="prompt-default-head">
+            <label>預設提示詞</label>
+            <span>老師版，不可編輯</span>
           </div>
-          <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
-          <div class="action-row prompt-actions">
-            <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
-          </div>
+          <div class="prompt-box" aria-label="${escapeHtml(label)}">${escapeHtml(defaultText)}</div>
         </div>
+        <details class="prompt-editor">
+          <summary>調整提示詞</summary>
+          <div class="prompt-editor-body">
+            <div class="prompt-editor-head">
+              <label for="prompt-${escapeHtml(promptKey)}">修改後提示詞</label>
+              <span>會自動保存</span>
+            </div>
+            <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
+            <div class="action-row prompt-actions">
+              <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
+            </div>
+          </div>
+        </details>
       `;
     }
 
@@ -1308,14 +1374,30 @@
     });
 
     steps.addEventListener("click", event => {
-      const copyKey = event.target.closest("[data-copy]")?.dataset.copy
-        || event.target.closest("[data-copy-edited]")?.dataset.copyEdited;
+      const copyKey = event.target.closest("[data-copy]")?.dataset.copy;
       if (copyKey) {
         const student = currentStudent();
         const map = promptMap(student);
         if (map[copyKey]) {
-          copyText(currentPromptText(copyKey, map[copyKey][0]), map[copyKey][1]);
+          copyText(map[copyKey][0], `預設${map[copyKey][1]}`);
         }
+        return;
+      }
+
+      const editedCopyKey = event.target.closest("[data-copy-edited]")?.dataset.copyEdited;
+      if (editedCopyKey) {
+        const student = currentStudent();
+        const map = promptMap(student);
+        if (map[editedCopyKey]) {
+          copyText(currentPromptText(editedCopyKey, map[editedCopyKey][0]), `修改後${map[editedCopyKey][1]}`);
+        }
+        return;
+      }
+
+      const stepTarget = event.target.closest("[data-step-nav]")?.dataset.stepNav;
+      if (stepTarget) {
+        document.getElementById(stepTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
       }
 
       if (event.target.closest("[data-action='copy-image']")) {
