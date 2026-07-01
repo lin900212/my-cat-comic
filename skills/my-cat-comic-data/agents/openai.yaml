@@ -1,0 +1,4 @@
+interface:
+  display_name: "My Cat Comic Data"
+  short_description: "Generate My Cat Comic students.json"
+  default_prompt: "Generate students.json for My Cat Comic from a story sheet and student role list."
