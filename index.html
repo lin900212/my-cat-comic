@@ -819,7 +819,7 @@
     }
 
     function promptChineseComic() {
-      return `請把下面的中文對白，以漫畫對白框的方式填入這張無字四格漫畫中。\n\n注意：\n1. 不要把角色名字放進對白框。\n2. 請保留原本漫畫畫面、角色、構圖與風格。\n3. 對白要放在適合的位置，不要遮住角色臉部。\n\n中文對白如下：\n【請貼上步驟 2 生成的中文對白】`;
+      return `請直接使用圖片生成／圖片編輯功能，把下面的中文對白以漫畫對白框的方式加到我上傳的四格漫畫中。\n\n注意：\n1. 不要把角色名字放進對白框。\n2. 請保留原本漫畫畫面、角色、構圖與風格。\n3. 對白要放在適合的位置，不要遮住角色臉部。\n\n中文對白如下：\n【請貼上步驟 2 生成的中文對白】`;
     }
 
     function promptEnglishComic() {
@@ -977,14 +977,12 @@
             <div>
               <p>先把角色圖放進四格漫畫 Gem。</p>
               <div class="action-row">${imageActions}</div>
-              <div class="notice strong">建議：下載角色圖，再到 Gemini 上傳。複製圖片若失敗，就用下載。</div>
             </div>
           </div>
           <div class="action-row">
             <button class="btn" data-copy="noText">複製：生成無字四格漫畫</button>
           </div>
           ${promptDetails(promptNoTextComic(student))}
-          <div class="notice">保留無字漫畫，步驟 3 會用到。</div>
         `)}
 
         ${stepHtml(2, "生成中文對白", `
@@ -999,15 +997,17 @@
             <button class="btn" data-copy="dialogue">複製：生成中文對白</button>
           </div>
           ${promptDetails(promptChineseDialogue(student))}
-          <div class="notice">保留中文對白，步驟 3 會用到。</div>
         `)}
 
         ${stepHtml(3, "製作中文版漫畫", `
           <ol class="mini-steps">
-            <li>貼上無字四格漫畫。</li>
-            <li>貼上中文對白。</li>
+            <li>回到四格漫畫 Gem 對話窗，複製無字四格漫畫。</li>
+            <li>回到步驟 2 的中文對白 Gemini 聊天視窗。</li>
+            <li>把無字四格漫畫貼到同一個聊天視窗。</li>
             <li>複製「製作中文版漫畫」提示詞。</li>
-            <li>把提示詞貼到 Gemini，送出。</li>
+            <li>把提示詞貼到同一個聊天視窗。</li>
+            <li>複製步驟 2 生成的中文對白，貼到提示詞下方【請貼上步驟 2 生成的中文對白】。</li>
+            <li>按送出。</li>
           </ol>
           <div class="action-row">
             <button class="btn" data-copy="zhComic">複製：製作中文版漫畫</button>
@@ -1019,12 +1019,13 @@
         ${stepHtml(4, "製作英文版漫畫", `
           <ol class="mini-steps">
             <li>開啟 Gemini 新對話。</li>
-            <li>貼上中文版四格漫畫。</li>
+            <li>回到中文版漫畫聊天視窗，複製中文版四格漫畫。</li>
+            <li>把中文版四格漫畫貼到 Gemini 新對話。</li>
             <li>複製「製作英文版漫畫」提示詞。</li>
-            <li>把提示詞貼到 Gemini，送出。</li>
+            <li>把提示詞貼到 Gemini 新對話，送出。</li>
           </ol>
           <div class="action-row">
-            <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini</a>
+            <a class="btn green" href="${GEMINI_URL}" target="_blank" rel="noreferrer">開啟 Gemini 新對話</a>
             <button class="btn" data-copy="enComic">複製：製作英文版漫畫</button>
           </div>
           ${promptDetails(promptEnglishComic())}
@@ -1063,7 +1064,7 @@
 
     function promptDetails(text) {
       return `
-        <details class="prompt-detail">
+        <details class="prompt-detail" open>
           <summary>查看提示詞</summary>
           <div class="prompt-box">${escapeHtml(text)}</div>
         </details>
