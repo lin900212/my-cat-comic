@@ -1,0 +1,1776 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Cat Comic 任務網站</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --surface: #fffdf8;
+      --surface-soft: #f1eee6;
+      --ink: #25211d;
+      --muted: #6f6860;
+      --line: #d8d0c3;
+      --accent: #2f5145;
+      --danger: #8b4037;
+      --white: #ffffff;
+      --shadow: 0 10px 30px rgba(35, 31, 27, .08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    a { color: inherit; }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+      position: relative;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .brand-kicker {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 6px 0 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 4.8vw, 58px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      max-width: 640px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 16px;
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 6px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .student-layout {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--ink);
+      margin-bottom: 7px;
+    }
+
+    select, input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(47, 81, 69, .14);
+    }
+
+    .student-card {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .student-card h2 {
+      margin: 0;
+      font-size: 30px;
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: 0;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px dashed rgba(123, 102, 89, .35);
+      padding-bottom: 7px;
+    }
+
+    .meta strong {
+      color: var(--ink);
+      text-align: right;
+    }
+
+    .events {
+      margin-top: 14px;
+      padding: 14px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .events h3, .teacher-section h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .events ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+
+    .main {
+      padding: 18px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 14px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .step:last-child { border-bottom: 0; }
+
+    .badge {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .step h2 {
+      margin: 2px 0 6px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .step p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .need {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .mini-steps {
+      margin: 8px 0 12px;
+      padding-left: 24px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .mini-steps li::marker {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .tap,
+    .hl {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 26px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 950;
+      color: var(--danger);
+      background: linear-gradient(transparent 48%, #ffe187 48%);
+      border: 1px solid rgba(214, 48, 49, .25);
+      white-space: normal;
+    }
+
+    .tap {
+      background: #fff1f0;
+      border-color: var(--danger);
+    }
+
+    .gem-plus-icon,
+    .gem-copy-icon,
+    .gem-image-icon {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 auto;
+      color: currentColor;
+    }
+
+    .gem-plus-icon {
+      width: 18px;
+      height: 18px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .gem-plus-icon::before,
+    .gem-plus-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 9px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+    }
+
+    .gem-plus-icon::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .gem-image-icon {
+      width: 18px;
+      height: 18px;
+      border: 2px solid currentColor;
+      border-radius: 5px;
+    }
+
+    .gem-image-icon::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 9px;
+      height: 5px;
+      border: 2px solid currentColor;
+      border-left: 0;
+      border-bottom: 0;
+      border-radius: 9px 9px 0 0;
+      transform: rotate(-22deg);
+    }
+
+    .gem-image-icon::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      bottom: 3px;
+      width: 8px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 12px 0 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--ink);
+      color: var(--white);
+      min-height: 42px;
+      padding: 10px 13px;
+      cursor: pointer;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .step .action-row {
+      flex-direction: column;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin: 14px 0 12px;
+    }
+
+    .step .btn {
+      width: min(100%, 320px);
+      min-height: 50px;
+      justify-content: flex-start;
+      padding: 12px 16px;
+      font-size: 16px;
+    }
+
+    .role-image-wrap .action-row {
+      margin-top: 12px;
+    }
+
+    .btn.secondary {
+      background: var(--white);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn.green {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .btn.red {
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn:disabled {
+      opacity: .46;
+      cursor: not-allowed;
+    }
+
+    .role-image-wrap {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      align-items: center;
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+    }
+
+    .role-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      cursor: grab;
+      user-select: none;
+    }
+
+    .empty-image {
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border: 1px dashed var(--muted);
+      border-radius: 6px;
+      line-height: 1.6;
+    }
+
+    .prompt-default,
+    .prompt-editor {
+      margin-top: 10px;
+      padding: 12px;
+      background: #fbfaf7;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+    }
+
+    .prompt-default-head,
+    .prompt-editor-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .prompt-default-head label,
+    .prompt-editor-head label {
+      margin: 0;
+    }
+
+    .prompt-default-head span,
+    .prompt-editor-head span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .prompt-box {
+      padding: 12px;
+      background: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 14px;
+    }
+
+    .prompt-editor {
+      padding: 0;
+    }
+
+    .prompt-editor summary {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      margin: 12px;
+      padding: 10px 13px;
+      border-radius: 6px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      background: var(--white);
+      font-weight: 900;
+    }
+
+    .prompt-editor.required-input summary {
+      width: min(calc(100% - 24px), 320px);
+      min-height: 50px;
+      justify-content: flex-start;
+      color: var(--white);
+      background: var(--ink);
+      border-color: var(--ink);
+      font-size: 16px;
+    }
+
+    .prompt-editor-body {
+      padding: 0 12px 12px;
+    }
+
+    .prompt-editor textarea {
+      min-height: 180px;
+      line-height: 1.65;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .prompt-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 0;
+    }
+
+    .prompt-actions .btn {
+      width: auto;
+      min-width: 104px;
+    }
+
+    .notice {
+      margin-top: 10px;
+      border-left: 4px solid var(--accent);
+      padding: 10px 12px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      line-height: 1.5;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .notice.strong {
+      border-left-color: var(--ink);
+      background: var(--surface-soft);
+      color: var(--ink);
+    }
+
+    .gem-copy-icon {
+      width: 18px;
+      height: 15px;
+      margin: 0 3px -2px;
+    }
+
+    .gem-copy-icon::before,
+    .gem-copy-icon::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 2px solid currentColor;
+      border-radius: 2px;
+      background: var(--white);
+    }
+
+    .gem-copy-icon::before {
+      left: 0;
+      top: 3px;
+    }
+
+    .gem-copy-icon::after {
+      left: 4px;
+      top: 0;
+    }
+
+    .support-details {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+    }
+
+    .support-details summary {
+      cursor: pointer;
+      padding: 12px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .support-details-body {
+      padding: 0 12px 12px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .support-details-body ol,
+    .support-details-body ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin: 10px 0 0;
+    }
+
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    .check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .teacher {
+      display: none;
+      padding: 18px;
+    }
+
+    .teacher.active, .student.active {
+      display: block;
+    }
+
+    .student {
+      display: none;
+    }
+
+    .teacher-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .teacher-section {
+      padding: 16px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .file-drop {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 180px;
+      border: 1px dashed var(--muted);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+      text-align: center;
+      color: var(--muted);
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .file-drop img {
+      max-width: 100%;
+      max-height: 240px;
+      border-radius: 6px;
+    }
+
+    .file-drop input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .student-list {
+      display: grid;
+      gap: 10px;
+      max-height: 520px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .row-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+    }
+
+    .row-card strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .row-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sample {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: var(--ink);
+      color: var(--white);
+      padding: 12px 14px;
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+      z-index: 50;
+      font-weight: 800;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) {
+      .topbar, .student-layout, .teacher-grid, .role-image-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .mode-tabs {
+        width: 100%;
+      }
+
+      .tab {
+        flex: 1;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div>
+        <div class="brand-kicker">AI Warriors Mission Site</div>
+        <h1>My Cat Comic</h1>
+      </div>
+      <nav class="mode-tabs" aria-label="模式切換">
+        <button class="tab" id="studentTab" aria-selected="true">學生任務</button>
+        <button class="tab" id="teacherTab" aria-selected="false">老師管理</button>
+      </nav>
+    </header>
+
+    <section class="student active" id="studentView">
+      <div class="student-layout">
+        <aside class="panel sidebar">
+          <label for="studentSelect">選擇你的名字</label>
+          <select id="studentSelect"></select>
+
+          <div class="student-card" id="studentCard"></div>
+          <div class="events" id="eventsCard"></div>
+        </aside>
+
+        <main class="panel main" id="steps"></main>
+      </div>
+    </section>
+
+    <section class="panel teacher" id="teacherView">
+      <div class="teacher-grid">
+        <div class="teacher-section">
+          <h3>新增或更新學生</h3>
+          <form id="studentForm">
+            <input type="hidden" id="editingId">
+            <div class="form-grid">
+              <div>
+                <label for="nameInput">姓名</label>
+                <input id="nameInput" type="text" required placeholder="小安">
+              </div>
+              <div>
+                <label for="groupInput">組別</label>
+                <input id="groupInput" type="text" placeholder="A 組">
+              </div>
+              <div>
+                <label for="roleInput">角色</label>
+                <input id="roleInput" type="text" placeholder="Coach">
+              </div>
+              <div>
+                <label for="storyInput">故事名稱</label>
+                <input id="storyInput" type="text" placeholder="The Test of Courage">
+              </div>
+              <div class="full">
+                <label>角色圖</label>
+                <div class="file-drop" id="imageDrop">
+                  <input id="imageInput" type="file" accept="image/*">
+                  <div id="imagePreview">上傳角色圖</div>
+                </div>
+              </div>
+              <div class="full">
+                <label for="eventsInput">四個事件，每行一個</label>
+                <textarea id="eventsInput" required placeholder="我在訓練中心教小騎士練習。&#10;我看到有小騎士很害怕。&#10;我告訴他們不要放棄。&#10;大家一起重新練習。"></textarea>
+              </div>
+            </div>
+            <div class="action-row">
+              <button class="btn green" type="submit">儲存學生</button>
+              <button class="btn secondary" type="button" id="clearFormBtn">清空表單</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="teacher-section">
+          <h3>學生資料</h3>
+          <div class="action-row">
+            <button class="btn secondary" id="exportJsonBtn" type="button">匯出 JSON</button>
+            <button class="btn secondary" id="importJsonBtn" type="button">匯入 JSON</button>
+            <button class="btn secondary" id="importCsvBtn" type="button">匯入 CSV</button>
+            <button class="btn secondary" id="reloadSiteDataBtn" type="button">重新載入網站資料</button>
+            <button class="btn red" id="loadSampleBtn" type="button">載入範例</button>
+          </div>
+          <input class="hidden" id="jsonFile" type="file" accept="application/json">
+          <input class="hidden" id="csvFile" type="file" accept=".csv,text/csv">
+          <p class="sample">CSV 欄位：name, group, role, story, event1, event2, event3, event4, imageUrl</p>
+          <div class="student-list" id="studentList"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GEM_COMIC_URL = "https://gemini.google.com/gem/1iM-nT7QaCP88ROCUr0pZFYT9t2GlJTj9?usp=sharing";
+    const GEMINI_URL = "https://gemini.google.com/u/0/app";
+    const STORE_KEY = "my-cat-comic-students-v23";
+    const PROMPT_STORE_KEY = "my-cat-comic-prompt-edits-v2";
+    const TEACHER_PASSWORD = "900212";
+    const TEACHER_AUTH_KEY = "my-cat-comic-teacher-auth";
+    const SITE_DATA_URL = "students.json";
+
+    const sampleStudents = [
+      {
+        id: "sample-an",
+        name: "小安",
+        group: "A 組",
+        role: "Coach",
+        story: "The Test of Courage",
+        image: "",
+        events: [
+          "我在訓練中心教小騎士練習。",
+          "我看到有小騎士很害怕。",
+          "我告訴他們不要放棄。",
+          "大家一起重新練習。"
+        ]
+      },
+      {
+        id: "sample-yu",
+        name: "小宇",
+        group: "A 組",
+        role: "Little Knight",
+        story: "The Test of Courage",
+        image: "",
+        events: [
+          "我來到訓練中心準備練習。",
+          "我看到對手很高大，覺得很害怕。",
+          "我聽見教練鼓勵我不要放棄。",
+          "我鼓起勇氣，和大家一起重新練習。"
+        ]
+      }
+    ];
+
+    let students = loadStudents();
+    let promptEdits = loadPromptEdits();
+    let promptHistories = {};
+    let applyingPromptHistory = false;
+    let selectedId = students[0]?.id || "";
+    let stagedImage = "";
+
+    const studentTab = document.getElementById("studentTab");
+    const teacherTab = document.getElementById("teacherTab");
+    const studentView = document.getElementById("studentView");
+    const teacherView = document.getElementById("teacherView");
+    const studentSelect = document.getElementById("studentSelect");
+    const studentCard = document.getElementById("studentCard");
+    const eventsCard = document.getElementById("eventsCard");
+    const steps = document.getElementById("steps");
+    const toast = document.getElementById("toast");
+
+    const form = document.getElementById("studentForm");
+    const editingId = document.getElementById("editingId");
+    const nameInput = document.getElementById("nameInput");
+    const groupInput = document.getElementById("groupInput");
+    const roleInput = document.getElementById("roleInput");
+    const storyInput = document.getElementById("storyInput");
+    const eventsInput = document.getElementById("eventsInput");
+    const imageInput = document.getElementById("imageInput");
+    const imagePreview = document.getElementById("imagePreview");
+    const studentList = document.getElementById("studentList");
+
+    function loadStudents() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) return sampleStudents;
+        const parsed = JSON.parse(raw);
+        const normalized = normalizeStudents(parsed);
+        return normalized.length ? normalized : sampleStudents;
+      } catch {
+        return sampleStudents;
+      }
+    }
+
+    function loadPromptEdits() {
+      try {
+        const raw = localStorage.getItem(PROMPT_STORE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    async function loadSiteStudents({ force = false } = {}) {
+      try {
+        if (!force && localStorage.getItem(STORE_KEY)) return;
+        const response = await fetch(`${SITE_DATA_URL}?v=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) return;
+        const data = await response.json();
+        const normalized = normalizeStudents(data);
+        if (!normalized.length) return;
+        students = normalized;
+        selectedId = students[0].id;
+        if (force) localStorage.removeItem(STORE_KEY);
+        renderAll();
+        showToast(force ? "已重新載入網站資料" : "已載入網站資料");
+      } catch {
+        if (force) showToast("讀不到 students.json");
+      }
+    }
+
+    function normalizeStudents(data) {
+      const list = Array.isArray(data) ? data : data?.students;
+      if (!Array.isArray(list)) return [];
+      return list.map((student, index) => ({
+        id: student.id || `student-${index + 1}`,
+        name: student.name || "",
+        group: student.group || "",
+        role: student.role || "",
+        story: student.story || "",
+        image: student.image || student.imageUrl || "",
+        events: Array.isArray(student.events)
+          ? student.events.filter(Boolean).slice(0, 4)
+          : [student.event1, student.event2, student.event3, student.event4].filter(Boolean)
+      })).filter(student => student.name);
+    }
+
+    function saveStudents() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(students));
+    }
+
+    function savePromptEdits() {
+      localStorage.setItem(PROMPT_STORE_KEY, JSON.stringify(promptEdits));
+    }
+
+    function uid() {
+      return "s-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
+    }
+
+    function currentStudent() {
+      return students.find(s => s.id === selectedId) || students[0];
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function eventsText(student) {
+      return (student?.events || []).filter(Boolean).map((event, index) => `${index + 1}. ${event}`).join("\n");
+    }
+
+    function savedPromptValue(student, promptKey, fallback) {
+      const studentEdits = promptEdits?.[student?.id] || {};
+      return Object.prototype.hasOwnProperty.call(studentEdits, promptKey)
+        ? studentEdits[promptKey]
+        : fallback;
+    }
+
+    function savePromptValue(student, promptKey, value) {
+      if (!student?.id || !promptKey) return;
+      promptEdits[student.id] = {
+        ...(promptEdits[student.id] || {}),
+        [promptKey]: value
+      };
+      savePromptEdits();
+    }
+
+    function promptRows(text) {
+      return Math.min(18, Math.max(8, String(text || "").split("\n").length + 2));
+    }
+
+    function promptComicPlan(student) {
+      return `請把我上傳的角色圖片當作「角色參考圖」，不要修改原圖。\n\n請根據圖片中的角色，幫我規劃一張 16:9 橫式、2x2 排版、沒有文字的四格漫畫。\n\n四個事件如下：\n${eventsText(student)}\n\n請先不要生成圖片。\n請先用簡短文字說明四格漫畫的構圖規劃：\n- 第 1 格要畫什麼\n- 第 2 格要畫什麼\n- 第 3 格要畫什麼\n- 第 4 格要畫什麼\n\n注意：\n- 這是一張全新的四格漫畫，不是修改我上傳的圖片。\n- 圖片中不要有對話框、旁白、標題、中文字或英文字。\n- 四格要像連續故事，不要四格都長得一樣。\n\n如果規劃完成，請最後提醒我回覆：「幫我生成看看！」`;
+    }
+
+    function promptGenerateNoTextComic() {
+      return `幫我生成看看！\n\n我已經按「+」，並切換到「建立圖像」模式。\n請依照剛剛的四格漫畫構圖規劃，生成一張全新的 16:9 橫式無字四格漫畫圖片。\n\n請注意：\n- 請生成新圖片，不要修改原本上傳的角色圖。\n- 版面是 2x2 四格漫畫。\n- 四格大小平均。\n- 上排左格是第 1 格。\n- 上排右格是第 2 格。\n- 下排左格是第 3 格。\n- 下排右格是第 4 格。\n- 四格之間有清楚黑色粗分隔線。\n- 圖片外圍有黑色漫畫邊框。\n- 除了小圓圈編號 1、2、3、4 之外，不要出現任何文字。\n- 不要加入對話框、旁白框、標題、說明文字、中文字或英文字。\n- 四格必須是同一個故事的四個不同時間點。\n- 第 1 格和第 4 格不能看起來一樣。`;
+    }
+
+    function promptChineseDialogue(student) {
+      return `請觀察我上傳的無字四格漫畫，以及下面四個事件。\n\n請依照左上、右上、左下、右下的順序，幫我寫出適合放進漫畫對白框的簡短中文對白。\n\n四個事件如下：\n${eventsText(student)}\n\n注意：\n1. 請只輸出文字，不要生成圖片。\n2. 不要修改圖片。\n3. 不要加入額外說明。\n4. 請根據漫畫中角色的外觀、表情、動作和位置判斷誰在說話。\n5. 每句對白前請標註「說話角色特徵」，讓我知道是哪一個角色在說話。\n6. 角色特徵只用來標示說話者，不要放進真正的對白內容。\n7. 句子要短，適合放進漫畫對白框。\n8. 每一句對白盡量 12 個中文字以內。\n9. 每一格可以有 1 到 2 句對白。\n10. 如果事件和漫畫畫面有一點不同，請以漫畫畫面為主，事件描述為輔。\n\n請用下面格式輸出：\n\n第 1 格：\n- 說話角色特徵：\n- 對白：\n\n第 2 格：\n- 說話角色特徵：\n- 對白：\n\n第 3 格：\n- 說話角色特徵：\n- 對白：\n\n第 4 格：\n- 說話角色特徵：\n- 對白：`;
+    }
+
+    function promptEnglishDialogue() {
+      return `請把下面的中文漫畫對白改寫成簡單英文。\n\n要求：\n1. 請只輸出文字，不要生成圖片。\n2. 不要修改圖片。\n3. 英文要簡單、自然，適合國小生閱讀。\n4. 每句英文要短，適合放進漫畫對白框。\n5. 請保留第 1 格、第 2 格、第 3 格、第 4 格的順序。\n6. 請保留「說話角色特徵」，方便我知道要把文字放在哪個角色旁邊。\n7. 不要加入額外說明。\n\n中文對白如下：\n【請貼上步驟 3 生成的中文對白】\n\n請用下面格式輸出：\n\nPanel 1:\n- Speaker:\n- Dialogue:\n\nPanel 2:\n- Speaker:\n- Dialogue:\n\nPanel 3:\n- Speaker:\n- Dialogue:\n\nPanel 4:\n- Speaker:\n- Dialogue:`;
+    }
+
+    function promptChineseComic(student) {
+      return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n請放入以下短對白：\n第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。`;
+    }
+
+    function promptEnglishComic(student) {
+      return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.`;
+    }
+
+    function promptCanvaFallback() {
+      return `沒關係，請不要修改圖片。\n\n請只幫我整理可以貼到 Canva 或 Google 簡報的對白文字。\n\n請用下面格式輸出：\n\n第 1 格：\n第 2 格：\n第 3 格：\n第 4 格：`;
+    }
+
+    function promptMap(student) {
+      return {
+        plan: [promptComicPlan(student), "規劃無字四格漫畫"],
+        noText: [promptGenerateNoTextComic(), "生成無字四格漫畫"],
+        dialogue: [promptChineseDialogue(student), "生成中文對白"],
+        englishDialogue: [promptEnglishDialogue(), "生成英文對白"],
+        zhComic: [promptChineseComic(student), "AI 生成中文版漫畫"],
+        enComic: [promptEnglishComic(student), "AI 生成英文版漫畫"],
+        canvaFallback: [promptCanvaFallback(), "整理 Canva 對白"]
+      };
+    }
+
+    function currentPromptText(promptKey, fallback) {
+      const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
+      return editor ? editor.value : fallback;
+    }
+
+    function promptHistoryKey(student, promptKey) {
+      return `${student?.id || "student"}::${promptKey}`;
+    }
+
+    function initPromptHistories() {
+      steps.querySelectorAll("[data-prompt-editor]").forEach(editor => {
+        const key = promptHistoryKey(currentStudent(), editor.dataset.promptEditor);
+        promptHistories[key] = {
+          values: [editor.value],
+          index: 0
+        };
+        refreshPromptHistoryButtons(editor.dataset.promptEditor);
+      });
+    }
+
+    function pushPromptHistory(promptKey, value) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key] || { values: [], index: -1 };
+      if (history.values[history.index] === value) {
+        refreshPromptHistoryButtons(promptKey);
+        return;
+      }
+      history.values = history.values.slice(0, history.index + 1);
+      history.values.push(value);
+      if (history.values.length > 40) history.values.shift();
+      history.index = history.values.length - 1;
+      promptHistories[key] = history;
+      refreshPromptHistoryButtons(promptKey);
+    }
+
+    function movePromptHistory(promptKey, direction) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key];
+      const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
+      if (!history || !editor) return;
+      const nextIndex = history.index + direction;
+      if (nextIndex < 0 || nextIndex >= history.values.length) return;
+      history.index = nextIndex;
+      applyingPromptHistory = true;
+      editor.value = history.values[history.index];
+      applyingPromptHistory = false;
+      savePromptValue(currentStudent(), promptKey, editor.value);
+      refreshPromptHistoryButtons(promptKey);
+    }
+
+    function refreshPromptHistoryButtons(promptKey) {
+      const key = promptHistoryKey(currentStudent(), promptKey);
+      const history = promptHistories[key];
+      const undoButton = steps.querySelector(`[data-prompt-undo="${promptKey}"]`);
+      const redoButton = steps.querySelector(`[data-prompt-redo="${promptKey}"]`);
+      if (undoButton) undoButton.disabled = !history || history.index <= 0;
+      if (redoButton) redoButton.disabled = !history || history.index >= history.values.length - 1;
+    }
+
+    function canOpenImageInNewTab(image) {
+      return Boolean(image && !image.startsWith("data:"));
+    }
+
+    async function copyText(text, label) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(`已複製：${label}`);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        showToast(`已複製：${label}`);
+      }
+    }
+
+    async function imageToPngBlob(image) {
+      if (!image) throw new Error("no image");
+
+      if (image.startsWith("data:")) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        if (blob.type === "image/png") return blob;
+        return await convertImageBlobToPng(blob);
+      }
+
+      const response = await fetch(image, { mode: "cors" });
+      const blob = await response.blob();
+      if (blob.type === "image/png") return blob;
+      return await convertImageBlobToPng(blob);
+    }
+
+    function convertImageBlobToPng(blob) {
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+          canvas.toBlob(pngBlob => {
+            if (pngBlob) resolve(pngBlob);
+            else reject(new Error("png conversion failed"));
+          }, "image/png");
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("image load failed"));
+        };
+        img.src = url;
+      });
+    }
+
+    async function copyCurrentStudentImage() {
+      const student = currentStudent();
+      if (!student?.image) {
+        showToast("尚無角色圖可複製");
+        return;
+      }
+
+      try {
+        if (!navigator.clipboard || !window.ClipboardItem) throw new Error("clipboard image unsupported");
+        const pngBlob = await imageToPngBlob(student.image);
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": pngBlob })
+        ]);
+        showToast("已複製角色圖，可以到 Gemini 貼上");
+      } catch {
+        showToast("瀏覽器擋住圖片複製，請用下載角色圖再上傳。");
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1600);
+    }
+
+    function renderAll() {
+      if (!students.length) {
+        students = sampleStudents;
+        selectedId = students[0].id;
+      }
+      renderStudentSelect();
+      renderStudent();
+      renderTeacherList();
+    }
+
+    function renderStudentSelect() {
+      studentSelect.innerHTML = students.map(student => (
+        `<option value="${escapeHtml(student.id)}"${student.id === selectedId ? " selected" : ""}>${escapeHtml(student.group ? `${student.group} - ${student.name}` : student.name)}</option>`
+      )).join("");
+    }
+
+    function renderStudent() {
+      const student = currentStudent();
+      if (!student) return;
+      selectedId = student.id;
+
+      studentCard.innerHTML = `
+        <h2>${escapeHtml(student.name)}</h2>
+        <div class="meta-list">
+          <div class="meta"><span>組別</span><strong>${escapeHtml(student.group || "未設定")}</strong></div>
+          <div class="meta"><span>角色</span><strong>${escapeHtml(student.role || "未設定")}</strong></div>
+          <div class="meta"><span>故事</span><strong>${escapeHtml(student.story || "未設定")}</strong></div>
+        </div>
+      `;
+
+      eventsCard.innerHTML = `
+        <h3>我的四個事件</h3>
+        <ol>${(student.events || []).map(event => `<li>${escapeHtml(event)}</li>`).join("")}</ol>
+      `;
+
+      const imageMarkup = student.image
+        ? `<img class="role-image" src="${student.image}" alt="${escapeHtml(student.name)} 的角色圖" draggable="true" title="可以試著拖曳到 Gemini，若不行請下載後上傳">`
+        : `<div class="empty-image">老師尚未上傳角色圖。<br>可以先完成其他步驟說明。</div>`;
+
+      const imageActions = student.image
+        ? `<button class="btn" data-action="copy-image">複製角色圖</button>
+           <a class="btn secondary" href="${student.image}" target="_blank" rel="noreferrer">開啟原圖</a>
+           <a class="btn secondary" href="${student.image}" download="${escapeHtml(student.group || "作品")}_${escapeHtml(student.name)}_${escapeHtml(student.role || "角色")}_角色圖.png">下載角色圖</a>`
+        : `<button class="btn secondary" disabled>尚無角色圖</button>`;
+
+      steps.innerHTML = `
+        ${stepHtml(1, "規劃無字四格漫畫", `
+          <ol class="mini-steps">
+            <li>點 <span class="tap">開啟四格漫畫 Gem</span></li>
+            <li>把角色圖放進 Gem</li>
+            <li>點 <span class="tap">複製：預設規劃無字四格漫畫</span></li>
+            <li>到 Gem 貼上送出</li>
+            <li>規劃可以，就做下一步</li>
+          </ol>
+          <div class="action-row">
+            <a class="btn green" href="${GEM_COMIC_URL}" target="_blank" rel="noreferrer">開啟四格漫畫 Gem</a>
+          </div>
+          <div class="role-image-wrap">
+            ${imageMarkup}
+            <div>
+              <p>先把角色圖放進四格漫畫 Gem。</p>
+              <div class="action-row">${imageActions}</div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn" data-copy="plan">複製：預設規劃無字四格漫畫</button>
+          </div>
+          ${promptTools("plan", "規劃無字四格漫畫提示詞", promptComicPlan(student))}
+        `)}
+
+        ${stepHtml(2, "生成無字四格漫畫", `
+          <ol class="mini-steps">
+            <li>點 <span class="tap">複製：預設生成無字四格漫畫</span></li>
+            <li>到 Gem 貼上</li>
+            <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span></li>
+            <li>送出，等圖片出現</li>
+          </ol>
+          <div class="action-row">
+            <button class="btn" data-copy="noText">複製：預設生成無字四格漫畫</button>
+          </div>
+          ${promptTools("noText", "生成無字四格漫畫提示詞", promptGenerateNoTextComic())}
+        `)}
+
+        ${stepHtml(3, "生成中文對白", `
+          <ol class="mini-steps">
+            <li>點 <span class="tap">複製：預設生成中文對白</span>，到 Gem 貼上送出</li>
+            <li>太長就回覆 <span class="hl">再短一點</span></li>
+            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
+          </ol>
+          <div class="action-row">
+            <button class="btn" data-copy="dialogue">複製：預設生成中文對白</button>
+          </div>
+          ${promptTools("dialogue", "生成中文對白提示詞", promptChineseDialogue(student))}
+        `)}
+
+        ${stepHtml(4, "生成英文對白", `
+          <ol class="mini-steps">
+            <li>點 <span class="tap">貼入我的文字</span>，將剛剛複製的中文對白貼到 <span class="hl">【請貼上步驟 3 生成的中文對白】</span></li>
+            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上送出</li>
+            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
+          </ol>
+          ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), { needsInput: true })}
+        `)}
+
+        ${stepHtml(5, "AI 製作中文版漫畫", `
+          <ol class="mini-steps">
+            <li>複製中文對白：<span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
+            <li>點 <span class="tap">貼入我的文字</span>，貼到 <span class="hl">請放入以下短對白</span></li>
+            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
+            <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> → 送出</li>
+            <li>檢查中文字</li>
+          </ol>
+          ${promptTools("zhComic", "AI 生成中文版漫畫提示詞", promptChineseComic(student), { needsInput: true })}
+          ${stableMethodDetails("穩定做法：用 Canva 或 Google 簡報製作中文版", `
+            <ol>
+              <li>下載步驟 2 的無字四格漫畫。</li>
+              <li>打開 Canva 或 Google 簡報。</li>
+              <li>放入無字漫畫，自己加上對白框。</li>
+              <li>把步驟 3 的中文對白貼進對白框。</li>
+              <li>下載或截圖成中文版漫畫。</li>
+            </ol>
+          `)}
+        `)}
+
+        ${stepHtml(6, "AI 製作英文版漫畫", `
+          <ol class="mini-steps">
+            <li>複製英文對白：<span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
+            <li>點 <span class="tap">貼入我的文字</span>，貼到 <span class="hl">Please put these short English lines</span></li>
+            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
+            <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> → 送出</li>
+            <li>檢查英文拼字</li>
+          </ol>
+          ${promptTools("enComic", "AI 生成英文版漫畫提示詞", promptEnglishComic(student), { needsInput: true })}
+          ${stableMethodDetails("穩定做法：用 Canva 或 Google 簡報製作英文版", `
+            <ol>
+              <li>複製中文版漫畫檔案。</li>
+              <li>把中文對白換成英文對白。</li>
+              <li>保留圖片、分格、角色與對白框位置。</li>
+              <li>如果英文太長，先縮短句子，不要把字縮到看不清楚。</li>
+              <li>下載或截圖成英文版漫畫。</li>
+            </ol>
+          `)}
+          ${stableMethodDetails("如果 Gemini 說不能加字", `
+            <p>不要要求它修改上一張圖。可以改用下面提示詞整理文字，再到 Canva 或簡報加字。</p>
+            <div class="action-row">
+              <button class="btn secondary" data-copy="canvaFallback">複製：整理 Canva 對白</button>
+            </div>
+            ${promptTools("canvaFallback", "整理 Canva 對白提示詞", promptCanvaFallback())}
+          `)}
+        `)}
+
+        ${stepHtml("✓", "完成後", `
+          <p>確認三份作品，然後舉手請老師收件。</p>
+          <div class="checklist">
+            <label class="check"><input type="checkbox"> 無字四格漫畫</label>
+            <label class="check"><input type="checkbox"> 中文版四格漫畫</label>
+            <label class="check"><input type="checkbox"> 英文版四格漫畫</label>
+          </div>
+        `)}
+      `;
+      initPromptHistories();
+    }
+
+    function stepHtml(number, title, body) {
+      const id = number === "✓" ? "step-done" : `step-${number}`;
+      return `
+        <section class="step" id="${id}" data-step-number="${escapeHtml(number)}">
+          <div class="badge">${number}</div>
+          <div>
+            <h2>${title}</h2>
+            ${body}
+          </div>
+        </section>
+      `;
+    }
+
+    function stableMethodDetails(title, body) {
+      return `
+        <details class="support-details">
+          <summary>${escapeHtml(title)}</summary>
+          <div class="support-details-body">
+            ${body}
+          </div>
+        </details>
+      `;
+    }
+
+    function promptTools(promptKey, label, defaultText, options = {}) {
+      const student = currentStudent();
+      const value = savedPromptValue(student, promptKey, defaultText);
+      const needsInput = options.needsInput === true;
+      const editorClass = needsInput ? "prompt-editor required-input" : "prompt-editor optional-adjust";
+      const summaryText = needsInput ? "貼入我的文字" : "調整我的提示詞";
+      return `
+        <div class="prompt-default">
+          <div class="prompt-default-head">
+            <label>預設提示詞</label>
+            <span>老師版，不可編輯</span>
+          </div>
+          <div class="prompt-box" aria-label="${escapeHtml(label)}">${escapeHtml(defaultText)}</div>
+        </div>
+        <details class="${editorClass}">
+          <summary>${summaryText}</summary>
+          <div class="prompt-editor-body">
+            <div class="prompt-editor-head">
+              <label for="prompt-${escapeHtml(promptKey)}">修改後提示詞</label>
+              <span>會自動保存</span>
+            </div>
+            <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
+            <div class="action-row prompt-actions">
+              <button class="btn secondary" data-prompt-undo="${escapeHtml(promptKey)}" type="button" disabled>上一步</button>
+              <button class="btn secondary" data-prompt-redo="${escapeHtml(promptKey)}" type="button" disabled>下一步</button>
+              <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    function renderTeacherList() {
+      studentList.innerHTML = students.map(student => `
+        <div class="row-card">
+          <div>
+            <strong>${escapeHtml(student.name)}</strong>
+            <span>${escapeHtml(student.group || "未分組")} · ${escapeHtml(student.role || "未設定角色")} · ${escapeHtml(student.story || "未設定故事")}</span>
+          </div>
+          <div class="action-row">
+            <button class="btn secondary" data-edit="${escapeHtml(student.id)}" type="button">編輯</button>
+            <button class="btn red" data-delete="${escapeHtml(student.id)}" type="button">刪除</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function canOpenTeacherMode() {
+      if (sessionStorage.getItem(TEACHER_AUTH_KEY) === "true") return true;
+      const password = prompt("請輸入老師管理密碼");
+      if (password === TEACHER_PASSWORD) {
+        sessionStorage.setItem(TEACHER_AUTH_KEY, "true");
+        return true;
+      }
+      if (password !== null) showToast("密碼錯誤");
+      return false;
+    }
+
+    function setMode(mode) {
+      if (mode === "teacher" && !canOpenTeacherMode()) {
+        mode = "student";
+      }
+      const isTeacher = mode === "teacher";
+      teacherTab.setAttribute("aria-selected", String(isTeacher));
+      studentTab.setAttribute("aria-selected", String(!isTeacher));
+      teacherView.classList.toggle("active", isTeacher);
+      studentView.classList.toggle("active", !isTeacher);
+    }
+
+    function clearForm() {
+      editingId.value = "";
+      nameInput.value = "";
+      groupInput.value = "";
+      roleInput.value = "";
+      storyInput.value = "";
+      eventsInput.value = "";
+      stagedImage = "";
+      imagePreview.innerHTML = "上傳角色圖";
+    }
+
+    function editStudent(id) {
+      const student = students.find(s => s.id === id);
+      if (!student) return;
+      editingId.value = student.id;
+      nameInput.value = student.name || "";
+      groupInput.value = student.group || "";
+      roleInput.value = student.role || "";
+      storyInput.value = student.story || "";
+      eventsInput.value = (student.events || []).join("\n");
+      stagedImage = student.image || "";
+      imagePreview.innerHTML = stagedImage
+        ? `<img src="${stagedImage}" alt="角色圖預覽">`
+        : "上傳角色圖";
+      setMode("teacher");
+      showToast(`正在編輯：${student.name}`);
+    }
+
+    function deleteStudent(id) {
+      const student = students.find(s => s.id === id);
+      if (!student) return;
+      if (!confirm(`確定要刪除 ${student.name} 嗎？`)) return;
+      students = students.filter(s => s.id !== id);
+      if (!students.length) students = sampleStudents;
+      selectedId = students[0].id;
+      saveStudents();
+      renderAll();
+      showToast("已刪除學生");
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"' && quoted && next === '"') {
+          cell += '"';
+          i++;
+        } else if (char === '"') {
+          quoted = !quoted;
+        } else if (char === "," && !quoted) {
+          row.push(cell.trim());
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !quoted) {
+          if (cell || row.length) {
+            row.push(cell.trim());
+            rows.push(row);
+          }
+          if (char === "\r" && next === "\n") i++;
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+      if (cell || row.length) {
+        row.push(cell.trim());
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function importCsv(text) {
+      const rows = parseCsv(text).filter(row => row.some(Boolean));
+      if (!rows.length) return;
+      const headers = rows[0].map(h => h.trim());
+      const next = rows.slice(1).map(row => {
+        const record = Object.fromEntries(headers.map((header, index) => [header, row[index] || ""]));
+        return {
+          id: uid(),
+          name: record.name || record["姓名"] || "",
+          group: record.group || record["組別"] || "",
+          role: record.role || record["角色"] || "",
+          story: record.story || record["故事"] || record["故事名稱"] || "",
+          image: record.imageUrl || record.image || record["角色圖"] || "",
+          events: [
+            record.event1 || record["事件1"] || "",
+            record.event2 || record["事件2"] || "",
+            record.event3 || record["事件3"] || "",
+            record.event4 || record["事件4"] || ""
+          ].filter(Boolean)
+        };
+      }).filter(student => student.name);
+      if (next.length) {
+        students = next;
+        selectedId = students[0].id;
+        saveStudents();
+        renderAll();
+        showToast(`已匯入 ${next.length} 位學生`);
+      }
+    }
+
+    function resizeImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            const max = 1000;
+            const scale = Math.min(1, max / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL("image/jpeg", .86));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    studentTab.addEventListener("click", () => setMode("student"));
+    teacherTab.addEventListener("click", () => setMode("teacher"));
+    studentSelect.addEventListener("change", event => {
+      selectedId = event.target.value;
+      renderStudent();
+    });
+
+    steps.addEventListener("input", event => {
+      const editor = event.target.closest("[data-prompt-editor]");
+      if (!editor) return;
+      savePromptValue(currentStudent(), editor.dataset.promptEditor, editor.value);
+      if (!applyingPromptHistory) {
+        pushPromptHistory(editor.dataset.promptEditor, editor.value);
+      }
+    });
+
+    steps.addEventListener("click", event => {
+      const undoKey = event.target.closest("[data-prompt-undo]")?.dataset.promptUndo;
+      if (undoKey) {
+        movePromptHistory(undoKey, -1);
+        return;
+      }
+
+      const redoKey = event.target.closest("[data-prompt-redo]")?.dataset.promptRedo;
+      if (redoKey) {
+        movePromptHistory(redoKey, 1);
+        return;
+      }
+
+      const copyKey = event.target.closest("[data-copy]")?.dataset.copy;
+      if (copyKey) {
+        const student = currentStudent();
+        const map = promptMap(student);
+        if (map[copyKey]) {
+          copyText(map[copyKey][0], `預設${map[copyKey][1]}`);
+        }
+        return;
+      }
+
+      const editedCopyKey = event.target.closest("[data-copy-edited]")?.dataset.copyEdited;
+      if (editedCopyKey) {
+        const student = currentStudent();
+        const map = promptMap(student);
+        if (map[editedCopyKey]) {
+          copyText(currentPromptText(editedCopyKey, map[editedCopyKey][0]), `修改後${map[editedCopyKey][1]}`);
+        }
+        return;
+      }
+
+      if (event.target.closest("[data-action='copy-image']")) {
+        copyCurrentStudentImage();
+      }
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const eventLines = eventsInput.value.split(/\n+/).map(line => line.trim()).filter(Boolean).slice(0, 4);
+      const data = {
+        id: editingId.value || uid(),
+        name: nameInput.value.trim(),
+        group: groupInput.value.trim(),
+        role: roleInput.value.trim(),
+        story: storyInput.value.trim(),
+        image: stagedImage,
+        events: eventLines
+      };
+      const index = students.findIndex(student => student.id === data.id);
+      if (index >= 0) students[index] = data;
+      else students.push(data);
+      selectedId = data.id;
+      saveStudents();
+      renderAll();
+      clearForm();
+      showToast("學生資料已儲存");
+    });
+
+    document.getElementById("clearFormBtn").addEventListener("click", clearForm);
+
+    imageInput.addEventListener("change", async event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      stagedImage = await resizeImage(file);
+      imagePreview.innerHTML = `<img src="${stagedImage}" alt="角色圖預覽">`;
+      showToast("角色圖已載入");
+    });
+
+    studentList.addEventListener("click", event => {
+      const editId = event.target.closest("[data-edit]")?.dataset.edit;
+      const deleteId = event.target.closest("[data-delete]")?.dataset.delete;
+      if (editId) editStudent(editId);
+      if (deleteId) deleteStudent(deleteId);
+    });
+
+    document.getElementById("loadSampleBtn").addEventListener("click", () => {
+      students = sampleStudents.map(student => ({ ...student, id: uid() }));
+      selectedId = students[0].id;
+      saveStudents();
+      renderAll();
+      showToast("已載入範例資料");
+    });
+
+    document.getElementById("reloadSiteDataBtn").addEventListener("click", () => {
+      loadSiteStudents({ force: true });
+    });
+
+    document.getElementById("exportJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify({ students }, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "my-cat-comic-students.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importJsonBtn").addEventListener("click", () => {
+      document.getElementById("jsonFile").click();
+    });
+
+    document.getElementById("jsonFile").addEventListener("change", event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const parsed = JSON.parse(reader.result);
+        students = normalizeStudents(parsed).map(student => ({ ...student, id: student.id || uid() }));
+        selectedId = students[0]?.id || "";
+        saveStudents();
+        renderAll();
+        showToast("JSON 已匯入");
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("importCsvBtn").addEventListener("click", () => {
+      document.getElementById("csvFile").click();
+    });
+
+    document.getElementById("csvFile").addEventListener("change", event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => importCsv(reader.result);
+      reader.readAsText(file);
+    });
+
+    renderAll();
+    loadSiteStudents();
+  </script>
+</body>
+</html>
