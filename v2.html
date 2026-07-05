@@ -495,6 +495,26 @@
       font-size: 14px;
     }
 
+    .prompt-default {
+      padding: 0;
+    }
+
+    .prompt-default summary {
+      cursor: pointer;
+      padding: 12px;
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .prompt-default-body {
+      padding: 0 12px 12px;
+    }
+
+    .required-slot {
+      color: var(--danger);
+      font-weight: 900;
+    }
+
     .prompt-editor {
       padding: 0;
     }
@@ -1031,6 +1051,11 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatPromptHtml(value) {
+      return escapeHtml(value)
+        .replaceAll("【請貼上步驟 3 生成的中文對白】", '<span class="required-slot">【請貼上步驟 3 生成的中文對白】</span>');
+    }
+
     function eventsText(student) {
       return (student?.events || []).filter(Boolean).map((event, index) => `${index + 1}. ${event}`).join("\n");
     }
@@ -1336,9 +1361,8 @@
 
         ${stepHtml(4, "生成英文對白", `
           <ol class="mini-steps">
-            <li>點 <span class="tap">貼入我的文字</span>，將剛剛複製的中文對白貼到 <span class="hl">【請貼上步驟 3 生成的中文對白】</span></li>
+            <li>點 <span class="tap">貼入我的文字</span>，將剛剛複製的中文對白貼到 <span class="required-slot">【請貼上步驟 3 生成的中文對白】</span></li>
             <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上送出</li>
-            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
           </ol>
           ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), { needsInput: true })}
         `)}
@@ -1433,14 +1457,17 @@
       const editorClass = needsInput ? "prompt-editor required-input" : "prompt-editor optional-adjust";
       const summaryText = needsInput ? "貼入我的文字" : "調整我的提示詞";
       return `
-        <div class="prompt-default">
-          <div class="prompt-default-head">
-            <label>預設提示詞</label>
-            <span>老師版，不可編輯</span>
+        <details class="prompt-default"${needsInput ? "" : " open"}>
+          <summary>預設提示詞</summary>
+          <div class="prompt-default-body">
+            <div class="prompt-default-head">
+              <label>老師版提示詞</label>
+              <span>不可編輯</span>
+            </div>
+            <div class="prompt-box" aria-label="${escapeHtml(label)}">${formatPromptHtml(defaultText)}</div>
           </div>
-          <div class="prompt-box" aria-label="${escapeHtml(label)}">${escapeHtml(defaultText)}</div>
-        </div>
-        <details class="${editorClass}">
+        </details>
+        <details class="${editorClass}"${needsInput ? " open" : ""}>
           <summary>${summaryText}</summary>
           <div class="prompt-editor-body">
             <div class="prompt-editor-head">
