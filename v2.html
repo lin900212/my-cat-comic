@@ -1083,7 +1083,10 @@
         .replace(/【請貼上[^】]+】/g, match => `<span class="required-slot">${match}</span>`)
         .replace(/【Paste Panel [1-4] English dialogue】/g, match => `<span class="required-slot">${match}</span>`);
       if (options.highlightInputCue) {
-        html = html.replace(/中文對白如下：/g, `<span class="required-slot">中文對白如下：</span>`);
+        html = html
+          .replace(/中文對白如下：/g, `<span class="required-slot">中文對白如下：</span>`)
+          .replace(/請放入以下短對白：/g, `<span class="required-slot">請放入以下短對白：</span>`)
+          .replace(/Please put these short English lines into speech bubbles:/g, `<span class="required-slot">Please put these short English lines into speech bubbles:</span>`);
       }
       return html;
     }
@@ -1136,8 +1139,16 @@
       return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n請放入以下短對白：\n第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。`;
     }
 
+    function promptChineseComicInput(student) {
+      return promptChineseComic(student).replace(/第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n/, "\n\n");
+    }
+
     function promptEnglishComic(student) {
       return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.`;
+    }
+
+    function promptEnglishComicInput(student) {
+      return promptEnglishComic(student).replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\n/, "\n\n");
     }
 
     function promptCanvaFallback() {
@@ -1425,13 +1436,18 @@
 
         ${stepHtml(5, "AI 製作中文版漫畫", `
           <ol class="mini-steps">
-            <li>複製中文對白：<span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
-            <li>點 <span class="tap">貼入我的文字</span>，貼到 <span class="hl">請放入以下短對白</span></li>
+            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
+            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「請放入以下短對白：」</span> 下方</li>
             <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
             <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> → 送出</li>
             <li>檢查中文字</li>
           </ol>
-          ${promptTools("zhComic", "AI 生成中文版漫畫提示詞", promptChineseComic(student), { needsInput: true })}
+          ${promptTools("zhComic", "AI 生成中文版漫畫提示詞", promptChineseComic(student), {
+            needsInput: true,
+            editableText: promptChineseComicInput(student),
+            highlightInputCue: true,
+            subtleInputSummary: true
+          })}
           ${stableMethodDetails("穩定做法：用 Canva 或 Google 簡報製作中文版", `
             <ol>
               <li>下載步驟 2 的無字四格漫畫。</li>
@@ -1445,13 +1461,18 @@
 
         ${stepHtml(6, "AI 製作英文版漫畫", `
           <ol class="mini-steps">
-            <li>複製英文對白：<span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span></li>
-            <li>點 <span class="tap">貼入我的文字</span>，貼到 <span class="hl">Please put these short English lines</span></li>
+            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製英文對白</li>
+            <li>將剛剛複製的英文對白貼到 <span class="required-slot">「Please put these short English lines into speech bubbles:」</span> 下方</li>
             <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
             <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> → 送出</li>
             <li>檢查英文拼字</li>
           </ol>
-          ${promptTools("enComic", "AI 生成英文版漫畫提示詞", promptEnglishComic(student), { needsInput: true })}
+          ${promptTools("enComic", "AI 生成英文版漫畫提示詞", promptEnglishComic(student), {
+            needsInput: true,
+            editableText: promptEnglishComicInput(student),
+            highlightInputCue: true,
+            subtleInputSummary: true
+          })}
           ${stableMethodDetails("穩定做法：用 Canva 或 Google 簡報製作英文版", `
             <ol>
               <li>複製中文版漫畫檔案。</li>
@@ -1510,9 +1531,16 @@
       const student = currentStudent();
       const editableDefault = options.editableText || defaultText;
       const savedValue = savedPromptValue(student, promptKey, editableDefault);
-      const value = promptKey === "englishDialogue"
-        ? savedValue.replace("【請貼上步驟 3 生成的中文對白】\n\n", "")
-        : savedValue;
+      let value = savedValue;
+      if (promptKey === "englishDialogue") {
+        value = value.replace("【請貼上步驟 3 生成的中文對白】\n\n", "");
+      }
+      if (promptKey === "zhComic") {
+        value = value.replace(/第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n/, "\n\n");
+      }
+      if (promptKey === "enComic") {
+        value = value.replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\n/, "\n\n");
+      }
       const needsInput = options.needsInput === true;
       const editorClass = [
         "prompt-editor",
