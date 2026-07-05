@@ -543,6 +543,12 @@
       font-size: 16px;
     }
 
+    .prompt-editor.subtle-input summary {
+      color: var(--ink);
+      background: var(--white);
+      border-color: var(--line);
+    }
+
     .prompt-editor-body {
       padding: 0 12px 12px;
     }
@@ -1072,10 +1078,14 @@
         .replaceAll("'", "&#039;");
     }
 
-    function formatPromptHtml(value) {
-      return escapeHtml(value)
+    function formatPromptHtml(value, options = {}) {
+      let html = escapeHtml(value)
         .replace(/【請貼上[^】]+】/g, match => `<span class="required-slot">${match}</span>`)
         .replace(/【Paste Panel [1-4] English dialogue】/g, match => `<span class="required-slot">${match}</span>`);
+      if (options.highlightInputCue) {
+        html = html.replace(/中文對白如下：/g, `<span class="required-slot">中文對白如下：</span>`);
+      }
+      return html;
     }
 
     function eventsText(student) {
@@ -1118,6 +1128,10 @@
       return `請把下面的中文漫畫對白改寫成簡單英文。\n\n要求：\n1. 請只輸出文字，不要生成圖片。\n2. 不要修改圖片。\n3. 英文要簡單、自然，適合國小生閱讀。\n4. 每句英文要短，適合放進漫畫對白框。\n5. 請保留第 1 格、第 2 格、第 3 格、第 4 格的順序。\n6. 請保留「說話角色特徵」，方便我知道要把文字放在哪個角色旁邊。\n7. 不要加入額外說明。\n\n中文對白如下：\n【請貼上步驟 3 生成的中文對白】\n\n請用下面格式輸出：\n\nPanel 1:\n- Speaker:\n- Dialogue:\n\nPanel 2:\n- Speaker:\n- Dialogue:\n\nPanel 3:\n- Speaker:\n- Dialogue:\n\nPanel 4:\n- Speaker:\n- Dialogue:`;
     }
 
+    function promptEnglishDialogueInput() {
+      return promptEnglishDialogue().replace("【請貼上步驟 3 生成的中文對白】\n\n", "\n");
+    }
+
     function promptChineseComic(student) {
       return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n請放入以下短對白：\n第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。`;
     }
@@ -1158,7 +1172,7 @@
       if ("value" in editor) {
         editor.value = value;
       } else {
-        editor.innerHTML = formatPromptHtml(value);
+        editor.innerHTML = formatPromptHtml(value, { highlightInputCue: editor.dataset.highlightCue === "true" });
       }
     }
 
@@ -1398,10 +1412,15 @@
 
         ${stepHtml(4, "生成英文對白", `
           <ol class="mini-steps">
-            <li>點 <span class="tap">貼入我的文字</span>，將剛剛複製的中文對白貼到 <span class="required-slot">【請貼上步驟 3 生成的中文對白】</span></li>
+            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「中文對白如下：」下方</span></li>
             <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上送出</li>
           </ol>
-          ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), { needsInput: true })}
+          ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), {
+            needsInput: true,
+            editableText: promptEnglishDialogueInput(),
+            highlightInputCue: true,
+            subtleInputSummary: true
+          })}
         `)}
 
         ${stepHtml(5, "AI 製作中文版漫畫", `
@@ -1489,10 +1508,19 @@
 
     function promptTools(promptKey, label, defaultText, options = {}) {
       const student = currentStudent();
-      const value = savedPromptValue(student, promptKey, defaultText);
+      const editableDefault = options.editableText || defaultText;
+      const savedValue = savedPromptValue(student, promptKey, editableDefault);
+      const value = promptKey === "englishDialogue"
+        ? savedValue.replace("【請貼上步驟 3 生成的中文對白】\n\n", "")
+        : savedValue;
       const needsInput = options.needsInput === true;
-      const editorClass = needsInput ? "prompt-editor required-input" : "prompt-editor optional-adjust";
+      const editorClass = [
+        "prompt-editor",
+        needsInput ? "required-input" : "optional-adjust",
+        options.subtleInputSummary ? "subtle-input" : ""
+      ].filter(Boolean).join(" ");
       const summaryText = needsInput ? "貼入我的文字" : "調整我的提示詞";
+      const highlightCue = options.highlightInputCue === true;
       return `
         <details class="prompt-default"${needsInput ? "" : " open"}>
           <summary>預設提示詞</summary>
@@ -1512,7 +1540,7 @@
               <span>會自動保存</span>
             </div>
             ${needsInput
-              ? `<div id="prompt-${escapeHtml(promptKey)}" class="prompt-editable" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" role="textbox" contenteditable="true">${formatPromptHtml(value)}</div>`
+              ? `<div id="prompt-${escapeHtml(promptKey)}" class="prompt-editable" data-prompt-editor="${escapeHtml(promptKey)}" data-highlight-cue="${highlightCue ? "true" : "false"}" aria-label="${escapeHtml(label)}" role="textbox" contenteditable="true">${formatPromptHtml(value, { highlightInputCue: highlightCue })}</div>`
               : `<textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>`}
             <div class="action-row prompt-actions">
               <button class="btn secondary" data-prompt-undo="${escapeHtml(promptKey)}" type="button" disabled>上一步</button>
