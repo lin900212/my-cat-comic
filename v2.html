@@ -1397,21 +1397,22 @@
       steps.innerHTML = `
         ${stepHtml(1, "規劃無字四格漫畫", `
           <ol class="mini-steps">
+            <li>按下 <span class="tap">複製角色圖</span> 複製角色</li>
             <li>點 <span class="tap">開啟四格漫畫 Gem</span></li>
-            <li>把角色圖放進 Gem</li>
-            <li>點 <span class="tap">複製：預設規劃無字四格漫畫</span></li>
+            <li>將角色圖貼上 Gem 的輸入框</li>
+            <li>點 <span class="tap">複製：預設規劃無字四格漫畫</span> 複製提示詞</li>
             <li>到 Gem 貼上送出</li>
             <li>規劃可以，就做下一步</li>
           </ol>
-          <div class="action-row">
-            <a class="btn green" href="${GEM_COMIC_URL}" target="_blank" rel="noreferrer">開啟四格漫畫 Gem</a>
-          </div>
           <div class="role-image-wrap">
             ${imageMarkup}
             <div>
-              <p>先把角色圖放進四格漫畫 Gem。</p>
+              <p>先複製角色圖，再開啟四格漫畫 Gem。</p>
               <div class="action-row">${imageActions}</div>
             </div>
+          </div>
+          <div class="action-row">
+            <a class="btn green" href="${GEM_COMIC_URL}" target="_blank" rel="noreferrer">開啟四格漫畫 Gem</a>
           </div>
           <div class="action-row">
             <button class="btn" data-copy="plan">複製：預設規劃無字四格漫畫</button>
