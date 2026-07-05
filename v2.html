@@ -290,7 +290,8 @@
 
     .gem-plus-icon,
     .gem-copy-icon,
-    .gem-image-icon {
+    .gem-image-icon,
+    .gem-close-icon {
       position: relative;
       display: inline-block;
       flex: 0 0 auto;
@@ -319,6 +320,28 @@
 
     .gem-plus-icon::after {
       transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .gem-close-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .gem-close-icon::before,
+    .gem-close-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 17px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .gem-close-icon::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
     }
 
     .gem-image-icon {
@@ -1411,6 +1434,7 @@
 
         ${stepHtml(3, "生成中文對白", `
           <ol class="mini-steps">
+            <li>先按圖片模式旁邊的 <span class="tap"><span class="gem-close-icon" aria-hidden="true"></span>X</span>，關掉圖片模式</li>
             <li>點 <span class="tap">複製：預設生成中文對白</span>，到 Gem 貼上送出</li>
             <li>太長就回覆 <span class="hl">再短一點</span></li>
             <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
