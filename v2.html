@@ -552,6 +552,27 @@
       line-height: 1.65;
       font-size: 14px;
       resize: vertical;
+      overflow: hidden;
+    }
+
+    .prompt-editable {
+      width: 100%;
+      min-height: 180px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      color: var(--ink);
+      border-radius: 6px;
+      outline: none;
+      line-height: 1.65;
+      font-size: 14px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .prompt-editable:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(47, 81, 69, .14);
     }
 
     .prompt-actions {
@@ -1053,7 +1074,8 @@
 
     function formatPromptHtml(value) {
       return escapeHtml(value)
-        .replaceAll("【請貼上步驟 3 生成的中文對白】", '<span class="required-slot">【請貼上步驟 3 生成的中文對白】</span>');
+        .replace(/【請貼上[^】]+】/g, match => `<span class="required-slot">${match}</span>`)
+        .replace(/【Paste Panel [1-4] English dialogue】/g, match => `<span class="required-slot">${match}</span>`);
     }
 
     function eventsText(student) {
@@ -1122,7 +1144,22 @@
 
     function currentPromptText(promptKey, fallback) {
       const editor = steps.querySelector(`[data-prompt-editor="${promptKey}"]`);
-      return editor ? editor.value : fallback;
+      return editor ? getPromptEditorValue(editor) : fallback;
+    }
+
+    function getPromptEditorValue(editor) {
+      if (!editor) return "";
+      if ("value" in editor) return editor.value;
+      return editor.innerText.replace(/\u00a0/g, " ");
+    }
+
+    function setPromptEditorValue(editor, value) {
+      if (!editor) return;
+      if ("value" in editor) {
+        editor.value = value;
+      } else {
+        editor.innerHTML = formatPromptHtml(value);
+      }
     }
 
     function promptHistoryKey(student, promptKey) {
@@ -1133,7 +1170,7 @@
       steps.querySelectorAll("[data-prompt-editor]").forEach(editor => {
         const key = promptHistoryKey(currentStudent(), editor.dataset.promptEditor);
         promptHistories[key] = {
-          values: [editor.value],
+          values: [getPromptEditorValue(editor)],
           index: 0
         };
         refreshPromptHistoryButtons(editor.dataset.promptEditor);
@@ -1164,9 +1201,9 @@
       if (nextIndex < 0 || nextIndex >= history.values.length) return;
       history.index = nextIndex;
       applyingPromptHistory = true;
-      editor.value = history.values[history.index];
+      setPromptEditorValue(editor, history.values[history.index]);
       applyingPromptHistory = false;
-      savePromptValue(currentStudent(), promptKey, editor.value);
+      savePromptValue(currentStudent(), promptKey, getPromptEditorValue(editor));
       refreshPromptHistoryButtons(promptKey);
     }
 
@@ -1474,7 +1511,9 @@
               <label for="prompt-${escapeHtml(promptKey)}">修改後提示詞</label>
               <span>會自動保存</span>
             </div>
-            <textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>
+            ${needsInput
+              ? `<div id="prompt-${escapeHtml(promptKey)}" class="prompt-editable" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" role="textbox" contenteditable="true">${formatPromptHtml(value)}</div>`
+              : `<textarea id="prompt-${escapeHtml(promptKey)}" data-prompt-editor="${escapeHtml(promptKey)}" aria-label="${escapeHtml(label)}" rows="${promptRows(value)}">${escapeHtml(value)}</textarea>`}
             <div class="action-row prompt-actions">
               <button class="btn secondary" data-prompt-undo="${escapeHtml(promptKey)}" type="button" disabled>上一步</button>
               <button class="btn secondary" data-prompt-redo="${escapeHtml(promptKey)}" type="button" disabled>下一步</button>
@@ -1660,9 +1699,10 @@
     steps.addEventListener("input", event => {
       const editor = event.target.closest("[data-prompt-editor]");
       if (!editor) return;
-      savePromptValue(currentStudent(), editor.dataset.promptEditor, editor.value);
+      const value = getPromptEditorValue(editor);
+      savePromptValue(currentStudent(), editor.dataset.promptEditor, value);
       if (!applyingPromptHistory) {
-        pushPromptHistory(editor.dataset.promptEditor, editor.value);
+        pushPromptHistory(editor.dataset.promptEditor, value);
       }
     });
 
