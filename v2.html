@@ -1129,7 +1129,7 @@
     }
 
     function promptEnglishDialogueInput() {
-      return promptEnglishDialogue().replace("【請貼上步驟 3 生成的中文對白】\n\n", "\n");
+      return promptEnglishDialogue().replace("【請貼上步驟 3 生成的中文對白】\n\n", "\n\n");
     }
 
     function promptChineseComic(student) {
@@ -1412,7 +1412,7 @@
 
         ${stepHtml(4, "生成英文對白", `
           <ol class="mini-steps">
-            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「中文對白如下：」下方</span></li>
+            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「中文對白如下：」</span> 下方</li>
             <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上送出</li>
           </ol>
           ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), {
