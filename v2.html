@@ -291,7 +291,8 @@
     .gem-plus-icon,
     .gem-copy-icon,
     .gem-image-icon,
-    .gem-close-icon {
+    .gem-close-icon,
+    .gem-submit-icon {
       position: relative;
       display: inline-block;
       flex: 0 0 auto;
@@ -376,6 +377,37 @@
       background: currentColor;
     }
 
+    .gem-submit-icon {
+      width: 18px;
+      height: 18px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .gem-submit-icon::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      width: 2px;
+      height: 9px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: translateX(-50%);
+    }
+
+    .gem-submit-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 4px;
+      width: 7px;
+      height: 7px;
+      border-left: 2px solid currentColor;
+      border-top: 2px solid currentColor;
+      transform: translateX(-50%) rotate(45deg);
+    }
+
     .action-row {
       display: flex;
       flex-wrap: wrap;
@@ -444,12 +476,33 @@
       display: grid;
       grid-template-columns: 220px 1fr;
       gap: 14px;
-      align-items: center;
+      align-items: start;
       margin: 12px 0;
       padding: 12px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--white);
+    }
+
+    .role-image-main {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .role-image-main .action-row {
+      margin: 0;
+    }
+
+    .role-image-more {
+      width: 100%;
+    }
+
+    .role-image-more summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 900;
+      padding: 8px 0;
     }
 
     .role-image {
@@ -1151,11 +1204,11 @@
     }
 
     function promptEnglishDialogue() {
-      return `請把下面的中文漫畫對白改寫成簡單英文。\n\n要求：\n1. 請只輸出文字，不要生成圖片。\n2. 不要修改圖片。\n3. 英文要簡單、自然，適合國小生閱讀。\n4. 每句英文要短，適合放進漫畫對白框。\n5. 請保留第 1 格、第 2 格、第 3 格、第 4 格的順序。\n6. 請保留「說話角色特徵」，方便我知道要把文字放在哪個角色旁邊。\n7. 不要加入額外說明。\n\n中文對白如下：\n【請貼上步驟 3 生成的中文對白】\n\n請用下面格式輸出：\n\nPanel 1:\n- Speaker:\n- Dialogue:\n\nPanel 2:\n- Speaker:\n- Dialogue:\n\nPanel 3:\n- Speaker:\n- Dialogue:\n\nPanel 4:\n- Speaker:\n- Dialogue:`;
+      return `請把下面的中文漫畫對白改寫成簡單英文。\n\n要求：\n1. 請只輸出文字，不要生成圖片。\n2. 不要修改圖片。\n3. 英文要簡單、自然，適合國小生閱讀。\n4. 每句英文要短，適合放進漫畫對白框。\n5. 請保留第 1 格、第 2 格、第 3 格、第 4 格的順序。\n6. 請保留「說話角色特徵」，方便我知道要把文字放在哪個角色旁邊。\n7. 不要加入額外說明。\n\n請用下面格式輸出：\n\nPanel 1:\n- Speaker:\n- Dialogue:\n\nPanel 2:\n- Speaker:\n- Dialogue:\n\nPanel 3:\n- Speaker:\n- Dialogue:\n\nPanel 4:\n- Speaker:\n- Dialogue:\n\n中文對白如下：\n【請貼上步驟 3 生成的中文對白】`;
     }
 
     function promptEnglishDialogueInput() {
-      return promptEnglishDialogue().replace("【請貼上步驟 3 生成的中文對白】\n\n", "\n\n");
+      return promptEnglishDialogue().replace("【請貼上步驟 3 生成的中文對白】", "\n");
     }
 
     function promptChineseComic(student) {
@@ -1167,11 +1220,11 @@
     }
 
     function promptEnglishComic(student) {
-      return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.`;
+      return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】`;
     }
 
     function promptEnglishComicInput(student) {
-      return promptEnglishComic(student).replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\n/, "\n\n");
+      return promptEnglishComic(student).replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】/, "\n");
     }
 
     function promptCanvaFallback() {
@@ -1388,69 +1441,75 @@
         ? `<img class="role-image" src="${student.image}" alt="${escapeHtml(student.name)} 的角色圖" draggable="true" title="可以試著拖曳到 Gemini，若不行請下載後上傳">`
         : `<div class="empty-image">老師尚未上傳角色圖。<br>可以先完成其他步驟說明。</div>`;
 
-      const imageActions = student.image
-        ? `<button class="btn" data-action="copy-image">複製角色圖</button>
-           <a class="btn secondary" href="${student.image}" target="_blank" rel="noreferrer">開啟原圖</a>
-           <a class="btn secondary" href="${student.image}" download="${escapeHtml(student.group || "作品")}_${escapeHtml(student.name)}_${escapeHtml(student.role || "角色")}_角色圖.png">下載角色圖</a>`
+      const imagePrimaryAction = student.image
+        ? `<button class="btn" data-action="copy-image">複製角色圖</button>`
         : `<button class="btn secondary" disabled>尚無角色圖</button>`;
+      const imageExtraActions = student.image
+        ? `<details class="role-image-more">
+             <summary>開啟原圖 / 下載角色圖</summary>
+             <div class="action-row">
+               <a class="btn secondary" href="${student.image}" target="_blank" rel="noreferrer">開啟原圖</a>
+               <a class="btn secondary" href="${student.image}" download="${escapeHtml(student.group || "作品")}_${escapeHtml(student.name)}_${escapeHtml(student.role || "角色")}_角色圖.png">下載角色圖</a>
+             </div>
+           </details>`
+        : "";
 
       steps.innerHTML = `
-        ${stepHtml(1, "規劃無字四格漫畫", `
+        ${stepHtml(1, "規劃四格漫畫圖", `
           <ol class="mini-steps">
-            <li>按下 <span class="tap">複製角色圖</span> 複製角色</li>
             <li>點 <span class="tap">開啟四格漫畫 Gem</span></li>
-            <li>將角色圖貼上 Gem 的輸入框</li>
-            <li>點 <span class="tap">複製：預設規劃無字四格漫畫</span> 複製提示詞</li>
-            <li>到 Gem 貼上送出</li>
-            <li>規劃可以，就做下一步</li>
+            <li>點 <span class="tap">複製角色圖</span>，貼到 Gem 輸入框</li>
+            <li>點 <span class="tap">複製提示詞</span>，貼到 Gem 輸入框</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-submit-icon" aria-hidden="true"></span>提交</span>，並檢查四格漫畫圖規劃</li>
           </ol>
-          <div class="role-image-wrap">
-            ${imageMarkup}
-            <div>
-              <p>先複製角色圖，再開啟四格漫畫 Gem。</p>
-              <div class="action-row">${imageActions}</div>
-            </div>
-          </div>
           <div class="action-row">
             <a class="btn green" href="${GEM_COMIC_URL}" target="_blank" rel="noreferrer">開啟四格漫畫 Gem</a>
           </div>
+          <div class="role-image-wrap">
+            <div class="role-image-main">
+              ${imageMarkup}
+              <div class="action-row">${imagePrimaryAction}</div>
+              ${imageExtraActions}
+            </div>
+            <div>
+              <p>複製角色圖後，貼到四格漫畫 Gem 的輸入框。</p>
+            </div>
+          </div>
           <div class="action-row">
-            <button class="btn" data-copy="plan">複製：預設規劃無字四格漫畫</button>
+            <button class="btn" data-copy="plan">複製提示詞</button>
           </div>
           ${promptTools("plan", "規劃無字四格漫畫提示詞", promptComicPlan(student))}
         `)}
 
-        ${stepHtml(2, "生成無字四格漫畫", `
+        ${stepHtml(2, "生成四格漫畫圖", `
           <ol class="mini-steps">
-            <li>點 <span class="tap">複製：預設生成無字四格漫畫</span></li>
-            <li>到 Gem 貼上</li>
-            <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span></li>
-            <li>送出，等圖片出現</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> 開啟圖片模式</li>
+            <li>點 <span class="tap">複製提示詞</span>，貼到 Gem 輸入框</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-submit-icon" aria-hidden="true"></span>提交</span>，等待圖片出現</li>
           </ol>
           <div class="action-row">
-            <button class="btn" data-copy="noText">複製：預設生成無字四格漫畫</button>
+            <button class="btn" data-copy="noText">複製提示詞</button>
           </div>
           ${promptTools("noText", "生成無字四格漫畫提示詞", promptGenerateNoTextComic())}
         `)}
 
         ${stepHtml(3, "生成中文對白", `
           <ol class="mini-steps">
-            <li>點 <span class="tap">複製：預設生成中文對白</span></li>
-            <li>回到 Gem，將滑鼠指到輸入框圖片模式，按下 <span class="tap"><span class="gem-close-icon" aria-hidden="true"></span></span> 關閉圖片模式</li>
-            <li>貼上剛剛複製的 <span class="tap">預設生成中文對白</span> 提示詞，按下送出</li>
-            <li>生成的對白太長就回覆 <span class="hl">再短一點</span></li>
-            <li>沒問題，在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
+            <li>到 Gem 將滑鼠指到輸入框圖片模式，按下 <span class="tap"><span class="gem-close-icon" aria-hidden="true"></span></span> 關閉圖片模式</li>
+            <li>點 <span class="tap">複製提示詞</span>，貼到 Gem 輸入框</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-submit-icon" aria-hidden="true"></span>提交</span>，檢查中文對白</li>
           </ol>
           <div class="action-row">
-            <button class="btn" data-copy="dialogue">複製：預設生成中文對白</button>
+            <button class="btn" data-copy="dialogue">複製提示詞</button>
           </div>
           ${promptTools("dialogue", "生成中文對白提示詞", promptChineseDialogue(student))}
         `)}
 
         ${stepHtml(4, "生成英文對白", `
           <ol class="mini-steps">
-            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「中文對白如下：」</span> 下方</li>
-            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上送出</li>
+            <li>到 Gem 中文對白下方，按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
+            <li>將複製的中文對白，貼到下方提示詞中 <span class="required-slot">「中文對白如下：」</span> 下方</li>
+            <li>點 <span class="tap">複製提示詞</span>，到 Gem 貼上送出</li>
           </ol>
           ${promptTools("englishDialogue", "生成英文對白提示詞", promptEnglishDialogue(), {
             needsInput: true,
@@ -1460,13 +1519,13 @@
           })}
         `)}
 
-        ${stepHtml(5, "AI 製作中文版漫畫", `
+        ${stepHtml(5, "製作中文版漫畫", `
           <ol class="mini-steps">
-            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
-            <li>將剛剛複製的中文對白貼到 <span class="required-slot">「請放入以下短對白：」</span> 下方</li>
-            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
-            <li>按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> → 送出</li>
-            <li>檢查中文字</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-plus-icon" aria-hidden="true"></span>＋</span> → <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>建立圖像</span> 開啟圖片模式</li>
+            <li>到 Gem 中文對白下方，按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製中文對白</li>
+            <li>將複製的中文對白，貼到下方提示詞中 <span class="required-slot">「請放入以下短對白：」</span> 下方</li>
+            <li>點 <span class="tap">複製提示詞</span>，貼到 Gem 輸入框</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-submit-icon" aria-hidden="true"></span>提交</span>，等待圖片出現，檢查漫畫中的文字</li>
           </ol>
           ${promptTools("zhComic", "AI 生成中文版漫畫提示詞", promptChineseComic(student), {
             needsInput: true,
@@ -1485,13 +1544,13 @@
           `)}
         `)}
 
-        ${stepHtml(6, "AI 製作英文版漫畫", `
+        ${stepHtml(6, "製作英文版漫畫", `
           <ol class="mini-steps">
-            <li>在 Gem 按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製英文對白</li>
-            <li>將剛剛複製的英文對白貼到 <span class="required-slot">「Please put these short English lines into speech bubbles:」</span> 下方</li>
-            <li>點 <span class="tap">複製：修改後提示詞</span>，到 Gem 貼上</li>
-            <li>確認輸入框有出現 <span class="tap"><span class="gem-image-icon" aria-hidden="true"></span>圖片</span>，代表已經可以開始生圖</li>
-            <li>檢查英文拼字</li>
+            <li>到 Gem 檢查是否已開啟圖片模式</li>
+            <li>到 Gem 英文對白下方，按 <span class="tap"><span class="gem-copy-icon" aria-hidden="true"></span>複製回覆</span> 複製英文對白</li>
+            <li>將複製的英文對白，貼到下方提示詞中 <span class="required-slot">「Please put these short English lines into speech bubbles:」</span> 下方</li>
+            <li>點 <span class="tap">複製提示詞</span>，貼到 Gem 輸入框</li>
+            <li>到 Gem 按 <span class="tap"><span class="gem-submit-icon" aria-hidden="true"></span>提交</span>，等待圖片出現，檢查漫畫中的文字</li>
           </ol>
           ${promptTools("enComic", "AI 生成英文版漫畫提示詞", promptEnglishComic(student), {
             needsInput: true,
@@ -1556,16 +1615,32 @@
     function promptTools(promptKey, label, defaultText, options = {}) {
       const student = currentStudent();
       const editableDefault = options.editableText || defaultText;
-      const savedValue = savedPromptValue(student, promptKey, editableDefault);
+      let savedValue = savedPromptValue(student, promptKey, editableDefault);
+      if (promptKey === "englishDialogue") {
+        const cueIndex = savedValue.indexOf("中文對白如下：");
+        const formatIndex = savedValue.indexOf("請用下面格式輸出：");
+        if (cueIndex >= 0 && formatIndex >= 0 && cueIndex < formatIndex) {
+          savedValue = editableDefault;
+        }
+      }
+      if (promptKey === "enComic") {
+        const lineIndex = savedValue.indexOf("Please put these short English lines into speech bubbles:");
+        const layoutIndex = savedValue.indexOf("Layout requirements:");
+        if (lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) {
+          savedValue = editableDefault;
+        }
+      }
       let value = savedValue;
       if (promptKey === "englishDialogue") {
         value = value.replace("【請貼上步驟 3 生成的中文對白】\n\n", "");
+        value = value.replace("【請貼上步驟 3 生成的中文對白】", "\n");
       }
       if (promptKey === "zhComic") {
         value = value.replace(/第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n/, "\n\n");
       }
       if (promptKey === "enComic") {
         value = value.replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】\n\n/, "\n\n");
+        value = value.replace(/Panel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】/, "\n");
       }
       const needsInput = options.needsInput === true;
       const editorClass = [
@@ -1599,7 +1674,7 @@
             <div class="action-row prompt-actions">
               <button class="btn secondary" data-prompt-undo="${escapeHtml(promptKey)}" type="button" disabled>上一步</button>
               <button class="btn secondary" data-prompt-redo="${escapeHtml(promptKey)}" type="button" disabled>下一步</button>
-              <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製：修改後提示詞</button>
+              <button class="btn" data-copy-edited="${escapeHtml(promptKey)}" type="button">複製提示詞</button>
             </div>
           </div>
         </details>
