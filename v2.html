@@ -474,7 +474,7 @@
 
     .role-image-wrap {
       display: grid;
-      grid-template-columns: 220px 1fr;
+      grid-template-columns: minmax(0, 320px) 1fr;
       gap: 14px;
       align-items: start;
       margin: 12px 0;
@@ -488,6 +488,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      width: min(100%, 320px);
     }
 
     .role-image-main .action-row {
@@ -625,6 +626,18 @@
       border-color: var(--line);
     }
 
+    .prompt-editor.optional-adjust summary {
+      display: block;
+      min-height: auto;
+      margin: 0;
+      padding: 12px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: inherit;
+    }
+
     .prompt-editor-body {
       padding: 0 12px 12px;
     }
@@ -665,8 +678,8 @@
     }
 
     .prompt-actions .btn {
-      width: auto;
-      min-width: 104px;
+      width: min(100%, 320px);
+      min-width: 0;
     }
 
     .notice {
@@ -1188,7 +1201,7 @@
     }
 
     function promptRows(text) {
-      return Math.min(18, Math.max(8, String(text || "").split("\n").length + 2));
+      return Math.max(8, String(text || "").split("\n").length + 2);
     }
 
     function promptComicPlan(student) {
@@ -1212,11 +1225,11 @@
     }
 
     function promptChineseComic(student) {
-      return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n請放入以下短對白：\n第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。`;
+      return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。\n\n請放入以下短對白：`;
     }
 
     function promptChineseComicInput(student) {
-      return promptChineseComic(student).replace(/第 1 格：【請貼上第 1 格中文對白，越短越好】\n第 2 格：【請貼上第 2 格中文對白，越短越好】\n第 3 格：【請貼上第 3 格中文對白，越短越好】\n第 4 格：【請貼上第 4 格中文對白，越短越好】\n\n/, "\n\n");
+      return `${promptChineseComic(student)}\n`;
     }
 
     function promptEnglishComic(student) {
@@ -1620,6 +1633,13 @@
         const cueIndex = savedValue.indexOf("中文對白如下：");
         const formatIndex = savedValue.indexOf("請用下面格式輸出：");
         if (cueIndex >= 0 && formatIndex >= 0 && cueIndex < formatIndex) {
+          savedValue = editableDefault;
+        }
+      }
+      if (promptKey === "zhComic") {
+        const lineIndex = savedValue.indexOf("請放入以下短對白：");
+        const layoutIndex = savedValue.indexOf("版面要求：");
+        if (lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) {
           savedValue = editableDefault;
         }
       }
