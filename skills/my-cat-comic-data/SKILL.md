@@ -1,6 +1,6 @@
 ---
 name: my-cat-comic-data
-description: Use when the user wants to generate, update, or publish My Cat Comic `students.json` data from story sheets, class rosters, role assignments, or student character images for the AI Warriors / My Cat Comic GitHub Pages site.
+description: Use when the user wants to generate, update, or publish My Cat Comic `students.json` data and v2 student prompt content from story sheets, class rosters, role assignments, four-event comic beats, or student character images for the AI Warriors / My Cat Comic GitHub Pages site.
 ---
 
 # My Cat Comic Data
@@ -14,6 +14,7 @@ Use this skill when the user asks for any of these:
 - 依照故事單和學生名單產生 My Cat Comic 學生資料
 - 產生或更新 `students.json`
 - 根據學生扮演角色，重述故事成「我的四個事件」
+- 同步更新 v2 學生頁面中會引用四句事件的提示詞
 - 把新的 `students.json` 上傳到 GitHub Pages
 - 幫某班、某組、某幾位學生建立 My Cat Comic 任務資料
 
@@ -138,6 +139,28 @@ Rules:
 - `image`: leave `""` if the user has not provided role images yet.
 - `events`: exactly 4 short Traditional Chinese first-person sentences.
 
+## V2 Prompt Synchronization
+
+For `v2.html`, do not duplicate full prompt text into `students.json` unless the site code is changed to consume those fields. The student page derives prompt text from each student's `events`, so keep the four event lines complete and current.
+
+When the user asks to sync or update every student's prompts, update each student's `events` first, then verify these v2 prompt keys:
+
+- `plan`: includes all 4 events through `eventsText(student)`.
+- `dialogue`: includes all 4 events through `eventsText(student)`.
+- `zhComic`: includes all 4 events as `第 1 格` to `第 4 格`.
+- `enComic`: includes all 4 events as `Panel 1` to `Panel 4` story references.
+- `noText`: fixed follow-up prompt after the planning step; it does not include student events directly.
+- `englishDialogue`: fixed conversion prompt; students or the teacher paste the Chinese dialogue generated in step 3.
+- `canvaFallback`: fixed fallback prompt; it does not include student events directly.
+
+If generating a prompt audit or preview for a student, include only the prompt keys the user asks for. If the user says "所有提示詞", include all keys above and mark which prompts are event-derived versus fixed/input-dependent.
+
+Use this verification command pattern after changing `students.json`:
+
+```bash
+node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('students.json','utf8')); for (const s of data.students) { if (!Array.isArray(s.events) || s.events.length !== 4) throw new Error(s.id + ' must have 4 events'); } console.log('ok')"
+```
+
 ## Event Writing Guidelines
 
 Write events for elementary students and four-panel comics:
@@ -184,13 +207,14 @@ For `The Test of Courage`, use these common role patterns:
 2. Extract story title, scene, four beats, and available roles.
 3. Read the roster and role assignments.
 4. Generate `students.json` according to the schema.
-5. Validate JSON with Node or Python before committing:
+5. If the user asks to sync v2 prompts, verify every student has exactly 4 event lines so the v2 prompt functions can populate `plan`, `dialogue`, `zhComic`, and `enComic`.
+6. Validate JSON with Node or Python before committing:
 
 ```bash
 node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('students.json','utf8')); console.log('ok')"
 ```
 
-6. If the user asked to publish, commit and push from the site repo:
+7. If the user asked to publish, commit and push from the site repo:
 
 ```bash
 git add students.json images
@@ -198,7 +222,7 @@ git commit -m "Update My Cat Comic student data"
 git push
 ```
 
-7. Verify GitHub Pages if pushed:
+8. Verify GitHub Pages if pushed:
 
 ```bash
 curl -s https://lin900212.github.io/my-cat-comic/students.json | head
