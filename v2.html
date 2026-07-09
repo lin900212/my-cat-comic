@@ -1225,7 +1225,7 @@
     }
 
     function promptChineseComic(student) {
-      return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。\n\n請放入以下短對白：`;
+      return `我已經按「+」，並切換到「建立圖像」模式。\n請使用圖片生成功能，生成一張全新的圖片。\n\n這不是圖片編輯任務。\n這不是把文字加到上一張圖片。\n請不要修改上一張圖片，也不要編輯剛剛生成的圖片。\n請把上傳的角色圖片只當作「角色外觀參考」，重新生成一張全新的 16:9 橫式、2x2 四格漫畫圖片。\n\n這次請直接生成「有中文對白框」的新版漫畫圖片。\n如果可以生成圖片，請直接生成圖片，不要只輸出文字。\n\n四格故事：\n${eventsText(student).split("\n").map(line => line.replace(/^(\d+)\. /, "第 $1 格：")).join("\n")}\n\n版面要求：\n- 生成全新圖片，不要修改上一張圖。\n- 16:9 橫式構圖。\n- 2x2 四格漫畫排版。\n- 四格大小平均。\n- 黑色粗分隔線與黑色外框。\n- 每格可以有 1 個簡短對白框。\n- 對白框不要遮住角色臉部。\n- 文字要大、清楚、容易閱讀。\n- 不要加入其他多餘文字、標題、旁白或浮水印。\n\n格號要求：\n- 請保留小圓圈編號 1、2、3、4。\n- 小圓圈編號是漫畫版面的一部分，不是多餘文字。\n- 第 1 格是左上格，編號 1 放在第 1 格右下角。\n- 第 2 格是右上格，編號 2 放在第 2 格左下角。\n- 第 3 格是左下格，編號 3 放在第 3 格右上角。\n- 第 4 格是右下格，編號 4 放在第 4 格左上角。\n- 四個小圓圈編號都要靠近中央十字分隔線。\n- 編號不可遮住角色臉部、重要動作或對白框。\n- 即使畫面中有中文對白框，也不能刪除小圓圈編號。\n\n請放入以下短對白：`;
     }
 
     function promptChineseComicInput(student) {
@@ -1233,7 +1233,7 @@
     }
 
     function promptEnglishComic(student) {
-      return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】`;
+      return `I have clicked "+" and switched to the "Create image" mode.\nPlease use image generation to create one brand-new image.\n\nThis is not an image editing task.\nThis is not adding text onto the previous image.\nDo not modify the previous image or edit the image you already generated.\nUse the uploaded character image only as a character appearance reference, then regenerate a completely new 16:9 horizontal 2x2 four-panel comic image.\n\nThis time, directly generate a new comic image with English speech bubbles.\nIf image generation is available, please generate the image directly. Do not only output text.\n\nFour-panel story reference:\nPanel 1: ${student.events?.[0] || "Event 1"}\nPanel 2: ${student.events?.[1] || "Event 2"}\nPanel 3: ${student.events?.[2] || "Event 3"}\nPanel 4: ${student.events?.[3] || "Event 4"}\n\nLayout requirements:\n- Generate a brand-new image. Do not modify the previous image.\n- 16:9 horizontal composition.\n- 2x2 four-panel comic layout.\n- Four panels are equal size.\n- Thick black panel dividers and a black outer border.\n- Each panel may have 1 short speech bubble.\n- Speech bubbles must not cover character faces.\n- Text should be large, clear, and easy to read.\n- Do not add extra titles, captions, watermarks, or unrelated text.\n\nPanel number requirements:\n- Keep small circled panel numbers 1, 2, 3, and 4 in the comic.\n- These circled numbers are part of the comic layout, not extra text.\n- Panel 1 is the top-left panel; place circled number 1 at the bottom-right corner of Panel 1.\n- Panel 2 is the top-right panel; place circled number 2 at the bottom-left corner of Panel 2.\n- Panel 3 is the bottom-left panel; place circled number 3 at the top-right corner of Panel 3.\n- Panel 4 is the bottom-right panel; place circled number 4 at the top-left corner of Panel 4.\n- All four circled numbers should be close to the central cross divider.\n- The circled numbers must not cover character faces, important actions, or speech bubbles.\n- Do not remove the circled numbers even when speech bubbles are present.\n\nPlease put these short English lines into speech bubbles:\nPanel 1: 【Paste Panel 1 English dialogue】\nPanel 2: 【Paste Panel 2 English dialogue】\nPanel 3: 【Paste Panel 3 English dialogue】\nPanel 4: 【Paste Panel 4 English dialogue】`;
     }
 
     function promptEnglishComicInput(student) {
@@ -1639,14 +1639,14 @@
       if (promptKey === "zhComic") {
         const lineIndex = savedValue.indexOf("請放入以下短對白：");
         const layoutIndex = savedValue.indexOf("版面要求：");
-        if (lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) {
+        if ((lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) || !savedValue.includes("格號要求：")) {
           savedValue = editableDefault;
         }
       }
       if (promptKey === "enComic") {
         const lineIndex = savedValue.indexOf("Please put these short English lines into speech bubbles:");
         const layoutIndex = savedValue.indexOf("Layout requirements:");
-        if (lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) {
+        if ((lineIndex >= 0 && layoutIndex >= 0 && lineIndex < layoutIndex) || !savedValue.includes("Panel number requirements:")) {
           savedValue = editableDefault;
         }
       }
