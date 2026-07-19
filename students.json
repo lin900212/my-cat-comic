@@ -1,45 +1,619 @@
 {
   "students": [
     {
-      "id": "wind-bunny",
-      "name": "吳品諭 Bunny",
+      "id": "wind-ona",
+      "name": "Ona",
       "group": "風班",
-      "role": "Narrator",
+      "role": "Narrator 旁白",
       "story": "The Test of Courage",
-      "image": "images/wind-bunny.jpg",
+      "image": "images/wind-ona.png",
       "events": [
-        "我介紹大家來到訓練中心練習戰鬥。",
-        "我看到有些騎士想炫耀，也有人害怕不敢動。",
-        "我聽見教練提醒大家，戰鬥是為了保護家人。",
-        "我看到大家重新練習，變得更有勇氣。"
+        "我以旁白的聲音介紹訓練中心的故事開始了。",
+        "我告訴大家，有些騎士想表現，卻有人跌倒又害怕。",
+        "我像說書人一樣說明，教練提醒騎士要勇敢。",
+        "我為故事收尾，告訴大家練習讓騎士更有信心。"
       ]
     },
     {
-      "id": "wind-rebecca",
-      "name": "張恩綺 Rebecca",
+      "id": "wind-yoyo",
+      "name": "Yoyo",
       "group": "風班",
-      "role": "Coach",
+      "role": "Coach 教練",
       "story": "The Test of Courage",
-      "image": "",
+      "image": "images/wind-yoyo.png",
       "events": [
-        "我在訓練中心教小騎士練習戰鬥。",
-        "我看到有些騎士想炫耀，也有人害怕不敢動。",
-        "我提醒大家，戰鬥不是為了贏，而是為了保護家人。",
-        "我看著大家重新練習，變得更勇敢。"
+        "我歡迎小騎士來到訓練中心。",
+        "我看到騎士跌倒，也有人害怕巨大對手。",
+        "我叫大家停下來，提醒他們要勇敢。",
+        "我稱讚騎士們做得好，大家一起歡呼。"
+      ]
+    },
+    {
+      "id": "wind-ted",
+      "name": "Ted",
+      "group": "風班",
+      "role": "Knights 騎士",
+      "story": "The Test of Courage",
+      "image": "images/wind-ted.png",
+      "events": [
+        "我準備好在訓練中心練習。",
+        "我想表現自己，卻不小心跌倒了。",
+        "我向大家道歉，重新鼓起勇氣。",
+        "我邀請大家一起繼續練習。"
+      ]
+    },
+    {
+      "id": "wind-vivian",
+      "name": "Vivian",
+      "group": "風班",
+      "role": "Knights 騎士",
+      "story": "The Test of Courage",
+      "image": "images/wind-vivian.png",
+      "events": [
+        "我跟大家一起走進訓練中心。",
+        "我看到 Ted 跌倒，關心他還好嗎。",
+        "我提醒大家，我們要保護家人。",
+        "我告訴大家，我們是一個團隊。"
+      ]
+    },
+    {
+      "id": "wind-hulk",
+      "name": "Hulk",
+      "group": "風班",
+      "role": "Knights 騎士",
+      "story": "The Test of Courage",
+      "image": "images/wind-hulk.png",
+      "events": [
+        "我說自己沒問題，準備開始練習。",
+        "我看到巨大對手，覺得很害怕。",
+        "我聽見教練鼓勵大家，告訴自己做得到。",
+        "我告訴大家，我們都是朋友。"
+      ]
+    },
+    {
+      "id": "wind-amber",
+      "name": "Amber",
+      "group": "風班",
+      "role": "Narrator 旁白",
+      "story": "The Best Weapon",
+      "image": "images/wind-amber.png",
+      "events": [
+        "我用旁白介紹 Jason 走進一間武器店。",
+        "我敘述小騎士們開始挑選適合自己的武器。",
+        "我說明 Mark 陪著 Jason，看見他選中那把劍。",
+        "我像說書人一樣收尾，York 也決定拿起斧頭。"
+      ]
+    },
+    {
+      "id": "wind-lily",
+      "name": "Lily",
+      "group": "風班",
+      "role": "Blacksmith 鐵匠",
+      "story": "The Best Weapon",
+      "image": "images/wind-lily.png",
+      "events": [
+        "我在武器店歡迎 Jason 進來。",
+        "我把 Jason 想要的劍拿給他看。",
+        "我告訴他，兩種武器都適合戰鬥。",
+        "我讓小騎士自己選最想要的武器。"
+      ]
+    },
+    {
+      "id": "wind-mark",
+      "name": "Mark",
+      "group": "風班",
+      "role": "Knight 騎士",
+      "story": "The Best Weapon",
+      "image": "images/wind-mark.png",
+      "events": [
+        "我陪小騎士來到武器店。",
+        "我看著他們挑選劍和斧頭。",
+        "我拿起一把劍，問 Jason 這把如何。",
+        "我搭著 Jason 的肩膀，帶他走出商店。"
+      ]
+    },
+    {
+      "id": "wind-york",
+      "name": "York",
+      "group": "風班",
+      "role": "Young Knights 小騎士",
+      "story": "The Best Weapon",
+      "image": "images/wind-york.png",
+      "events": [
+        "我和 Jason 一起來到武器店。",
+        "我看見斧頭，覺得自己想要它。",
+        "我問這把斧頭適不適合我。",
+        "我決定拿走斧頭，準備開始練習。"
+      ]
+    },
+    {
+      "id": "wind-jason",
+      "name": "Jason",
+      "group": "風班",
+      "role": "Young Knights 小騎士",
+      "story": "The Best Weapon",
+      "image": "images/wind-jason.png",
+      "events": [
+        "我走進武器店，想買一把劍。",
+        "我看著不同武器，慢慢挑選。",
+        "我告訴 Mark，我想要那把劍。",
+        "我跟著 Mark 走出商店，準備使用新武器。"
+      ]
+    },
+    {
+      "id": "wind-ethan",
+      "name": "Ethan",
+      "group": "風班",
+      "role": "Narrator 旁白",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-ethan.png",
+      "events": [
+        "我以旁白介紹巫醫正在醫院照顧騎士。",
+        "我告訴大家，巫醫發現草藥快要用完了。",
+        "我敘述外出的巫醫遇見長老，故事有了新希望。",
+        "我為故事收尾，巫醫和長老一起找到草藥。"
+      ]
+    },
+    {
+      "id": "wind-licca",
+      "name": "Licca",
+      "group": "風班",
+      "role": "Elder 長老",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-licca.png",
+      "events": [
+        "我在外面遇見正在找草藥的巫醫。",
+        "我告訴他我是長老。",
+        "我也想尋找草藥，願意一起幫忙。",
+        "我和巫醫一起找到需要的草藥。"
+      ]
+    },
+    {
+      "id": "wind-jasper",
+      "name": "Jasper",
+      "group": "風班",
+      "role": "Witch doctors 巫醫",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-jasper.png",
+      "events": [
+        "我知道醫院裡的草藥快用完了。",
+        "我外出尋找草藥時遇見長老。",
+        "我告訴長老，我正在找特別的草藥。",
+        "我和長老一起找到草藥，開心地歡呼。"
       ]
     },
     {
       "id": "wind-apple",
-      "name": "張奎鈞 Apple",
+      "name": "Apple",
       "group": "風班",
-      "role": "Knight",
-      "story": "The Test of Courage",
-      "image": "",
+      "role": "Witch doctors 巫醫",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-apple.png",
       "events": [
-        "我在訓練中心跟著教練練習戰鬥。",
-        "我看到有人犯錯，也覺得自己有點害怕。",
-        "我聽見教練說，戰鬥是為了保護家人。",
-        "我鼓起勇氣，和大家一起繼續練習。"
+        "我在醫院照顧受傷和生病的騎士。",
+        "我發現我們的草藥快用完了。",
+        "我留下來照顧騎士，讓同伴去找草藥。",
+        "我等大家找到草藥，好繼續治療騎士。"
+      ]
+    },
+    {
+      "id": "wind-ming",
+      "name": "Ming",
+      "group": "風班",
+      "role": "Knights 騎士",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-ming.png",
+      "events": [
+        "我在醫院裡生病了，需要巫醫幫忙。",
+        "我知道草藥快用完，心裡有點擔心。",
+        "我在醫院等待新的草藥被找到。",
+        "我希望巫醫帶回草藥，讓大家恢復健康。"
+      ]
+    },
+    {
+      "id": "wind-jasmine",
+      "name": "Jasmine",
+      "group": "風班",
+      "role": "Knights 騎士",
+      "story": "The Witch Doctor and the Elder",
+      "image": "images/wind-jasmine.png",
+      "events": [
+        "我在醫院裡受傷了，需要巫醫治療。",
+        "我聽見草藥快用完了，覺得很擔心。",
+        "我留在醫院，讓巫醫照顧我。",
+        "我等待大家找到草藥，讓騎士們好起來。"
+      ]
+    },
+    {
+      "id": "wind-rebecca",
+      "name": "Rebecca",
+      "group": "風班",
+      "role": "Narrator 旁白",
+      "story": "Hunting",
+      "image": "images/wind-rebecca.png",
+      "events": [
+        "我以旁白介紹年輕騎士在森林練習狩獵。",
+        "我告訴大家，兔子跑得很快，騎士們一直抓不到。",
+        "我敘述老騎士看見問題後，立刻前來指導。",
+        "我像說書人一樣收尾，年輕騎士終於成功了。"
+      ]
+    },
+    {
+      "id": "wind-jamie",
+      "name": "Jamie",
+      "group": "風班",
+      "role": "Old Knight 老騎士",
+      "story": "Hunting",
+      "image": "images/wind-jamie.png",
+      "events": [
+        "我看到年輕騎士在森林裡練習狩獵。",
+        "我發現他們很難抓到跑很快的兔子。",
+        "我提醒他們射擊前要專注瞄準兔子。",
+        "我看到他們成功了，覺得很棒。"
+      ]
+    },
+    {
+      "id": "wind-allen",
+      "name": "Allen",
+      "group": "風班",
+      "role": "Young Knights 年輕騎士",
+      "story": "Hunting",
+      "image": "images/wind-allen.png",
+      "events": [
+        "我在森林裡和同伴練習狩獵。",
+        "我想抓兔子當食物，卻追不上牠。",
+        "我聽見老騎士提醒我們要專注瞄準。",
+        "我和 Leif 成功射中兔子，開心地歡呼。"
+      ]
+    },
+    {
+      "id": "wind-leif",
+      "name": "Leif",
+      "group": "風班",
+      "role": "Young Knights 年輕騎士",
+      "story": "Hunting",
+      "image": "images/wind-leif.png",
+      "events": [
+        "我和 Allen 在森林裡練習狩獵。",
+        "我發現兔子跑太快，很難抓到牠。",
+        "我聽懂老騎士說要先專注瞄準。",
+        "我和 Allen 成功抓到兔子，覺得很開心。"
+      ]
+    },
+    {
+      "id": "wind-bunny",
+      "name": "Bunny",
+      "group": "風班",
+      "role": "Rabbit 兔子",
+      "story": "Hunting",
+      "image": "images/wind-bunny.png",
+      "events": [
+        "我在森林裡遇到正在狩獵的年輕騎士。",
+        "我跑得很快，笑著叫他們來抓我。",
+        "我看到老騎士教他們專心瞄準。",
+        "我被他們抓到了，急著大喊救命。"
+      ]
+    },
+    {
+      "id": "thunder-kate",
+      "name": "Kate",
+      "group": "雷班",
+      "role": "Narrator 旁白",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-kate.png",
+      "events": [
+        "我以旁白介紹部落的希望從每天練習開始。",
+        "我敘述巫醫們研究植物，努力準備草藥。",
+        "我告訴大家，騎士們為了部落榮耀勇敢出發。",
+        "我為故事收尾，巫醫治療騎士，大家互相幫助。"
+      ]
+    },
+    {
+      "id": "thunder-jojo",
+      "name": "Jojo",
+      "group": "雷班",
+      "role": "Witch doctors 巫醫",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-jojo.png",
+      "events": [
+        "我和同伴一起研究植物。",
+        "我正在混合草藥，準備幫助騎士。",
+        "我把找到的資料記下來。",
+        "我幫騎士包紮傷口，照顧他的傷。"
+      ]
+    },
+    {
+      "id": "thunder-kassie",
+      "name": "Kassie",
+      "group": "雷班",
+      "role": "Witch doctors 巫醫",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-kassie.png",
+      "events": [
+        "我和巫醫同伴一起研究植物。",
+        "我正在混合草藥，想找出好方法。",
+        "我查資料，尋找適合的藥。",
+        "我思考該用哪一種藥幫騎士治療。"
+      ]
+    },
+    {
+      "id": "thunder-peggy",
+      "name": "Peggy",
+      "group": "雷班",
+      "role": "Witch doctors 巫醫",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-peggy.png",
+      "events": [
+        "我和巫醫同伴一起研究植物。",
+        "我正在混合草藥，準備找藥。",
+        "我努力尋找能幫助騎士的藥。",
+        "我看到騎士傷口很深，想快點幫忙。"
+      ]
+    },
+    {
+      "id": "thunder-peter",
+      "name": "Peter",
+      "group": "雷班",
+      "role": "Knight 騎士",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-peter.png",
+      "events": [
+        "我每天練習技巧，想讓自己瞄得更準。",
+        "我知道巫醫們正在研究草藥幫助大家。",
+        "我和 Allen 為部落榮耀一起出發。",
+        "我努力保護這片土地，等待巫醫治療。"
+      ]
+    },
+    {
+      "id": "thunder-allen",
+      "name": "Allen",
+      "group": "雷班",
+      "role": "Knight 騎士",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-allen.png",
+      "events": [
+        "我去健身房鍛鍊手臂，想變得更強。",
+        "我知道巫醫們正在研究草藥。",
+        "我和 Peter 為部落榮耀一起出發。",
+        "我準備攻擊，努力保護部落。"
+      ]
+    },
+    {
+      "id": "thunder-cindy",
+      "name": "Cindy",
+      "group": "雷班",
+      "role": "Knight 騎士",
+      "story": "The Tribe's Hope",
+      "image": "images/thunder-cindy.png",
+      "events": [
+        "我每天練習，想讓自己變強壯。",
+        "我看到巫醫們研究植物和草藥。",
+        "我準備第二個上場，一起為部落戰鬥。",
+        "我看見巫醫治療騎士，覺得大家互相幫忙。"
+      ]
+    },
+    {
+      "id": "thunder-ian",
+      "name": "Ian",
+      "group": "雷班",
+      "role": "Narrator 旁白",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-ian.png",
+      "events": [
+        "我以旁白介紹巫醫在圖書館研究草藥。",
+        "我告訴大家，小騎士跑進來尋找騎士需要的草藥。",
+        "我敘述騎士聞到奇怪味道，走進巫醫的圖書館。",
+        "我像說書人一樣收尾，巫醫找到草藥並送去幫忙。"
+      ]
+    },
+    {
+      "id": "thunder-vivi",
+      "name": "Vivi",
+      "group": "雷班",
+      "role": "Witch doctor 巫醫",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-vivi.png",
+      "events": [
+        "我在圖書館讀書，研究草藥。",
+        "我聽見大家想找騎士需要的草藥。",
+        "我答應去尋找那種奇怪味道的草藥。",
+        "我告訴大家，這種草藥可以治好疾病。"
+      ]
+    },
+    {
+      "id": "thunder-nina",
+      "name": "Nina",
+      "group": "雷班",
+      "role": "Little knights 小騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-nina.png",
+      "events": [
+        "我和小騎士們想找到騎士需要的草藥。",
+        "我在圖書館裡一起查找線索。",
+        "我看到大家終於找到那種草藥。",
+        "我想趕快把草藥拿去給騎士。"
+      ]
+    },
+    {
+      "id": "thunder-mike",
+      "name": "Mike",
+      "group": "雷班",
+      "role": "Little knights 小騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-mike.png",
+      "events": [
+        "我跑進圖書館，想找騎士需要的草藥。",
+        "我和 Don 說出我們的任務。",
+        "我和大家一起查書，尋找草藥線索。",
+        "我看到巫醫找到草藥，準備幫助騎士。"
+      ]
+    },
+    {
+      "id": "thunder-eve",
+      "name": "Eve",
+      "group": "雷班",
+      "role": "Little knights 小騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-eve.png",
+      "events": [
+        "我和小騎士們一起尋找草藥。",
+        "我在圖書館裡等待巫醫找到答案。",
+        "我看到巫醫終於找到需要的草藥。",
+        "我說我們要趕快把草藥送去。"
+      ]
+    },
+    {
+      "id": "thunder-roy",
+      "name": "Roy",
+      "group": "雷班",
+      "role": "Little knights 小騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-roy.png",
+      "events": [
+        "我和大家一起想找騎士需要的草藥。",
+        "我提議先查書找線索。",
+        "我看到巫醫找到那種草藥。",
+        "我明白知識就是力量，開心地說出來。"
+      ]
+    },
+    {
+      "id": "thunder-hugo",
+      "name": "Hugo",
+      "group": "雷班",
+      "role": "Little knights 小騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-hugo.png",
+      "events": [
+        "我和小騎士們一起尋找草藥。",
+        "我在圖書館裡幫忙查找線索。",
+        "我看到大家終於找到那種草藥。",
+        "我和大家趕快把草藥送去幫助騎士。"
+      ]
+    },
+    {
+      "id": "thunder-don",
+      "name": "Don",
+      "group": "雷班",
+      "role": "Knights 騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-don.png",
+      "events": [
+        "我和 Mike 想找到騎士需要的草藥。",
+        "我聞到一股奇怪的草藥味。",
+        "我走到巫醫的圖書館，想知道那是什麼。",
+        "我等待巫醫找到草藥，好幫助騎士。"
+      ]
+    },
+    {
+      "id": "thunder-ken",
+      "name": "Ken",
+      "group": "雷班",
+      "role": "Knights 騎士",
+      "story": "The Inheritance of Wisdom",
+      "image": "images/thunder-ken.png",
+      "events": [
+        "我知道大家正在尋找騎士需要的草藥。",
+        "我等待巫醫在圖書館找出答案。",
+        "我看到巫醫終於找到那種草藥。",
+        "我提醒大家快點清洗草藥，再拿給騎士。"
+      ]
+    },
+    {
+      "id": "thunder-thomas",
+      "name": "Thomas",
+      "group": "雷班",
+      "role": "Narrator 旁白",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-thomas.png",
+      "events": [
+        "我以旁白介紹戰爭後，部落正在尋找新的出路。",
+        "我敘述領袖帶著騎士們到廟裡祈求和平。",
+        "我告訴大家，長老突然出現，帶來安慰和希望。",
+        "我為故事收尾，流星劃過天空，部落重新振作。"
+      ]
+    },
+    {
+      "id": "thunder-penny",
+      "name": "Penny",
+      "group": "雷班",
+      "role": "Narrator 旁白",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-penny.png",
+      "events": [
+        "我像說書人一樣開場，戰爭後的家變得一團亂。",
+        "我告訴大家，族人到廟裡祈求幫助與和平。",
+        "我敘述長老出現後，大家開始相信未來會變好。",
+        "我用旁白收尾，流星出現，星之部落有了希望。"
+      ]
+    },
+    {
+      "id": "thunder-ray",
+      "name": "Ray",
+      "group": "雷班",
+      "role": "Elder 長老",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-ray.png",
+      "events": [
+        "我聽見部落的人為家園難過。",
+        "我在大家祈禱時突然出現。",
+        "我安慰大家，告訴他們犧牲不會白費。",
+        "我說部落會再次變綠，帶來好事。"
+      ]
+    },
+    {
+      "id": "thunder-audrey",
+      "name": "Audrey",
+      "group": "雷班",
+      "role": "Chief 領袖",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-audrey.png",
+      "events": [
+        "我看到我們的家被摧毀，覺得很難過。",
+        "我叫大家停止打架，帶他們去廟裡祈禱。",
+        "我聽見長老說部落會再次有希望。",
+        "我帶大家重建家園，讓星之部落加油。"
+      ]
+    },
+    {
+      "id": "thunder-vera",
+      "name": "Vera",
+      "group": "雷班",
+      "role": "Knights 騎士",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-vera.png",
+      "events": [
+        "我在戰後仍然不想認輸。",
+        "我跟著領袖到廟裡祈求幫助。",
+        "我聽見長老說部落會再次變好。",
+        "我看到流星，感謝長老帶來希望。"
+      ]
+    },
+    {
+      "id": "thunder-fredy",
+      "name": "Fredy",
+      "group": "雷班",
+      "role": "Knights 騎士",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-fredy.png",
+      "events": [
+        "我在戰後輸了，覺得很失落。",
+        "我跟著大家去廟裡祈求和平。",
+        "我聽見長老鼓勵大家不要難過。",
+        "我看到流星，重新相信我們有希望。"
+      ]
+    },
+    {
+      "id": "thunder-david",
+      "name": "David",
+      "group": "雷班",
+      "role": "Knights 騎士",
+      "story": "The Guidance of Star Tribe",
+      "image": "images/thunder-david.png",
+      "events": [
+        "我在戰後也不想認輸。",
+        "我和大家一起到廟裡祈求幫助。",
+        "我聽見長老說犧牲不會白費。",
+        "我看到流星，覺得它正帶來和平。"
       ]
     }
   ]
