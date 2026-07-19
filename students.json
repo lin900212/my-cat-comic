@@ -1,6 +1,20 @@
 {
   "students": [
     {
+      "id": "teacher-allen",
+      "name": "Allen 老師",
+      "group": "老師班",
+      "role": "Narrator 旁白",
+      "story": "Star Tribe Example",
+      "image": "images/teacher-allen.png",
+      "events": [
+        "我站在星空神殿前，準備向貓族說故事。",
+        "我舉起星光法杖，指向夜空中的流星。",
+        "我告訴大家，星光會指引我們找到希望。",
+        "我帶著貓族一起祈願，準備重建家園。"
+      ]
+    },
+    {
       "id": "wind-ona",
       "name": "Ona",
       "group": "風班",
